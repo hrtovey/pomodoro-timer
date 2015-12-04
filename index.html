@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pomodoro Clock</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+	<div id="settings" class="settings">
+		<p class="instructions">Set the timer and choose your task. Then press Start.</p>
+		<div class="form-input">
+			<label for="time-input">Length of Pomodoro</label>
+			<input id="time-input" value="25"> <span class="input-label">minutes</span>
+		</div>
+		<div class="form-input">
+			<label for="short-break">Length of Short Break</label>
+			<input id="short-break" value="5"> <span class="input-label">minutes</span>
+		</div>
+		<div class="form-input">
+			<label for="long-break">Length of Long Break</label>
+			<input id="long-break" value="20"> <span class="input-label">minutes</span>
+		</div>
+		<button id="save-settings" class="save">Save</button>
+		<button id="cancel-settings" class="cancel">Cancel</button>
+	</div>
+	<div id="timer" class="timer hide">
+		<button id="start-pomodoro">Pomodoro</button>
+		<button id="start-short-break">Short Break</button>
+		<button id="start-long-break">Long Break</button>
+		<button id="change-settings">Change Settings</button>
+		<p class="break">Break Time!</p>
+		<div id="time" class="time"></div>
+		<div class="paused-text">Paused for <span id="pause-time"></span></div>
+		<button id="start" class="pause-start start">Start</button>
+		<button id="pause" class="pause-start pause hide">Pause</button>
+		<p id="pomo-finished"></p>
+	</div>
+	<div class="form-input hide">
+		<label for="task">Task</label>
+		<input class="task-input" placeholder="Create a pomodoro clock">
+	</div>
+
+
+
+To Do:
+<ul>
+	<li>Pomo Timer ends -> Break Time</li>
+	<li>Count Pomos</li>
+	<li>After 4th pomo, Break Time is longer</li>
+</ul>
+
+
+</main>
+
+
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="timer.js"></script>	
+</body>
+</html>

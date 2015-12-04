@@ -9,6 +9,7 @@ TimerWidget = {
         startShortBreakButton: $('#start-short-break'),
         startLongBreakButton: $('#start-long-break'),
         runningTimer: '',
+        timerBegin: 0,
         timerCountdown: 0,
         timerStart: 0
     },
@@ -45,20 +46,37 @@ TimerWidget = {
     },
 
     startTimer: function(setting) {
-        t.timerStart = setting;
+        t.timerBegin = setting;
+        t.timerStart = new Date;
         t.timerCountdown = setting;
-        t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, setting);
+        TimerWidget.displayTimer(t.timerCountdown);
+        t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000);
     },
 
-    intervalTimer: function(setting) {
-        if (t.timerCountdown >= 0) {
-            console.log(t.timerCountdown);
-            t.timerCountdown -= 1;
+    intervalTimer: function() {
+        if (t.timerCountdown > 0) {
+            t.timerCountdown = t.timerBegin - Math.round((new Date - t.timerStart) / 1000);
         } else {
             TimerWidget.cancelTimer();
+            t.timerCountdown = 0;
+        }
+        TimerWidget.displayTimer(t.timerCountdown);
+    },
+
+    displayTimer: function(countdown) {
+        var minute = Math.floor(countdown / 60);
+        var second = countdown % 60;
+        $('#minute-display').text(TimerWidget.formatTime(minute));
+        $('#second-display').text(TimerWidget.formatTime(second));
+    },
+
+    formatTime: function(time) {
+        if (time < 10) {
+            return '0' + time;
+        } else {
+            return time;
         }
     }
-
 
 };
 

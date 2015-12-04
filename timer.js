@@ -109,11 +109,39 @@ SettingsWidget = {
 var h,
 HistoryWidget = {
 
+    settings: {
+        taskInput: $('#task-input'),
+        historyData: $('#history-data'),
+        taskInputButton: $('#task-input-button'),
+        taskList: []
+    },
+
+    init: function() {
+        h = this.settings;
+        this.bindUIActions();
+
+    },
+
+    bindUIActions: function() {
+        h.taskInputButton.on('click', function() {
+            HistoryWidget.addTask();
+        });
+    },
+
+    addTask: function() {
+        h.taskList.push([h.taskInput.val(), t.timerStart - t.timerCountdown]);
+        HistoryWidget.displayTaskHistory();
+    },
+
+    displayTaskHistory: function() {
+        h.historyData.text(h.taskList);
+    }
 };
 
 $(document).ready(function() {
 
   SettingsWidget.init();
   TimerWidget.init();
+  HistoryWidget.init();
 
 });

@@ -1,3 +1,5 @@
+// Remember to use Date.now() to compare time stamps
+
 var t,
 TimerWidget = {
     settings: {
@@ -7,7 +9,8 @@ TimerWidget = {
         startShortBreakButton: $('#start-short-break'),
         startLongBreakButton: $('#start-long-break'),
         runningTimer: '',
-        timerBeginning: 0
+        timerCountdown: 0,
+        timerStart: 0
     },
 
     init: function() {
@@ -42,13 +45,15 @@ TimerWidget = {
     },
 
     startTimer: function(setting) {
-        t.timerBeginning = setting;
+        t.timerStart = setting;
+        t.timerCountdown = setting;
         t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, setting);
     },
 
     intervalTimer: function(setting) {
-        if (t.timerBeginning > 0) {
-            
+        if (t.timerCountdown >= 0) {
+            console.log(t.timerCountdown);
+            t.timerCountdown -= 1;
         } else {
             TimerWidget.cancelTimer();
         }

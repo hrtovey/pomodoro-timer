@@ -49,16 +49,22 @@ TimerWidget = {
         t.timerBegin = setting;
         t.timerStart = new Date;
         t.timerCountdown = setting;
+        t.statement.addClass('hide');
         TimerWidget.displayTimer(t.timerCountdown);
         t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000);
     },
 
-    intervalTimer: function() {
-        if (t.timerCountdown > 0) {
-            t.timerCountdown = t.timerBegin - Math.round((new Date - t.timerStart) / 1000);
+    chooseStatement: function(type) {
+        if (type === 'pomo') {
+            if (t.pomoCount % 4 === 0) {
+                return "Take a long break!"
+            } else {
+                return "Take a short break!"
+            }
         } else {
-            TimerWidget.cancelTimer();
-            t.timerCountdown = 0;
+            return "Back to work with you!";
+        }
+    },
         }
         TimerWidget.displayTimer(t.timerCountdown);
     },

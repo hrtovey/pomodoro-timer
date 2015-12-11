@@ -11,7 +11,10 @@ TimerWidget = {
         runningTimer: '',
         timerBegin: 0,
         timerCountdown: 0,
-        timerStart: 0
+        timerStart: moment(),
+        pomoCount: 0,
+        statement: $('#statement'),
+        timerEnd: moment()
     },
 
     init: function() {

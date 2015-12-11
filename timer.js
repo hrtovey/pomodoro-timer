@@ -30,31 +30,41 @@ TimerWidget = {
 
         t.startPomodoroButton.on('click', function() {
             TimerWidget.cancelTimer();
-            TimerWidget.startTimer(s.timerSetting);
+            TimerWidget.startTimer(s.timerSetting, 'pomo');
         });
 
         t.startShortBreakButton.on('click', function() {
             TimerWidget.cancelTimer();
-            TimerWidget.startTimer(s.shortBreakSetting);
+            TimerWidget.startTimer(s.shortBreakSetting, 'short-break');
         });
 
         t.startLongBreakButton.on('click', function() {
             TimerWidget.cancelTimer();
-            TimerWidget.startTimer(s.longBreakSetting);
+            TimerWidget.startTimer(s.longBreakSetting, 'long-break');
         });
     },
 
-    cancelTimer: function() {
+    cancelTimer: function(type) {
+        t.timerEnd = moment();
         clearInterval(t.runningTimer);
+        t.timerCountdown = 0;
+        if (type === 'pomo') {
+            t.pomoCount += 1;
+            h.taskArea .removeClass('hide');
+        }
+        t.statement.removeClass('hide');
+        t.statement.text(TimerWidget.chooseStatement(type));
+
     },
 
-    startTimer: function(setting) {
+    startTimer: function(setting, type) {
         t.timerBegin = setting;
-        t.timerStart = new Date;
+        t.timerStart = moment();
         t.timerCountdown = setting;
         t.statement.addClass('hide');
+        h.taskArea.addClass('hide');
         TimerWidget.displayTimer(t.timerCountdown);
-        t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000);
+        t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, type);
     },
 
     chooseStatement: function(type) {
@@ -68,6 +78,21 @@ TimerWidget = {
             return "Back to work with you!";
         }
     },
+
+    intervalTimer: function(type) {
+        if (t.timerCountdown > 1) {
+            t.timerCountdown = t.timerBegin - Math.round((moment() - t.timerStart) / 1000);
+        } else {
+            TimerWidget.cancelTimer(type);
+            if (type === 'short-break' || type === 'long-break') {
+                HistoryWidget.storeLocally({
+                    description: 'Break Time',
+                    timeTaken: t.timerBegin,
+                    timeStarted: t.timerStart.format('h:mm:ss a'),
+                    timeEnded: t.timerEnd.format('h:mm:ss a'),
+                    id: t.timerEnd.format('x')
+                });
+            }
         }
         TimerWidget.displayTimer(t.timerCountdown);
     },
@@ -75,6 +100,7 @@ TimerWidget = {
     displayTimer: function(countdown) {
         var minute = Math.floor(countdown / 60);
         var second = countdown % 60;
+        $('#time').removeClass('hide');
         $('#minute-display').text(TimerWidget.formatTime(minute));
         $('#second-display').text(TimerWidget.formatTime(second));
     },
@@ -121,6 +147,7 @@ SettingsWidget = {
     },
 
     saveSettings: function() {
+        TimerWidget.cancelTimer();
         s.timerSetting = s.timeInput.val() * 60;
         s.shortBreakSetting = s.shortBreakInput.val() * 60;
         s.longBreakSetting = s.longBreakInput.val() * 60;

@@ -169,31 +169,162 @@ var h,
 HistoryWidget = {
 
     settings: {
+        taskArea: $('#task-area'),
         taskInput: $('#task-input'),
         historyData: $('#history-data'),
+        historyDataTable: $('#history-data-table'),
         taskInputButton: $('#task-input-button'),
-        taskList: []
+        historyDataTable: $('#history-data-table'),
+        data: JSON.parse(localStorage.getItem("taskData")) || {},
+        clearHistory: $('#clear-history'),
+        saveButton: $('#save-button'),
+        taskSaveArea: $('#task-save-area'),
+        cancelButton: $('#cancel-button'),
+        currentTaskEdit: '',
+        editTaskButton: $('#edit-task'),
+        oldTaskInfo: ''
     },
 
     init: function() {
         h = this.settings;
         this.bindUIActions();
+        $.each(h.data, function (index, params) {
+            HistoryWidget.addTask(params);
+        });
 
     },
 
     bindUIActions: function() {
         h.taskInputButton.on('click', function() {
-            HistoryWidget.addTask();
+            HistoryWidget.storeLocally({
+              description: h.taskInput.val(),
+              timeTaken: t.timerBegin,
+              timeStarted: t.timerStart.format('h:mm:ss a'),
+              timeEnded: t.timerEnd.format('h:mm:ss a'),
+              id: t.timerEnd.format('x')
+            });
+        });
+
+        h.clearHistory.on('click', function() {
+            HistoryWidget.clearHistory();
+        });
+
+        h.historyDataTable.on('click', '.edit-task', function() {
+            HistoryWidget.editTask(this.id);
+        });
+
+        h.historyDataTable.on('focus', '.history__task-description', function() {
+            HistoryWidget.showSave($(this).parent().attr('id'));
+        });
+
+        h.historyDataTable.on('keydown', '.history__task-description', function(e) {
+            if (e.which === 13) {
+                $(this).blur();
+            }
+
+            return e.which != 13;
+        });
+
+        h.saveButton.on('click', function() {
+            HistoryWidget.saveTask(h.currentTaskEdit);
+        });
+
+        h.cancelButton.on('click', function() {
+            HistoryWidget.cancelSave();
+        });
+
+        h.historyDataTable.on('click', '.edit-task', function() {
+            HistoryWidget.editTask(this);
         });
     },
 
-    addTask: function() {
-        h.taskList.push([h.taskInput.val(), t.timerStart - t.timerCountdown]);
-        HistoryWidget.displayTaskHistory();
+    editTask: function(id) {
+        $(id).siblings('.history__task-description').focus();
     },
 
-    displayTaskHistory: function() {
-        h.historyData.text(h.taskList);
+    cancelSave: function() {
+        $('#' + h.currentTaskEdit + '>.history__task-description').text(h.oldTaskInfo);
+        HistoryWidget.hideSave();
+    },
+
+    showSave: function(id) {
+        h.oldTaskInfo = $('#' + id + '>.history__task-description').text();
+        h.currentTaskEdit = id;
+        h.taskSaveArea.removeClass('hide');
+    },
+
+    saveTask: function(id) {
+        // stores new content in localstorage
+        h.data[id]['description'] = $('#' + h.currentTaskEdit + '>.history__task-description').text();
+        localStorage.setItem("taskData", JSON.stringify(h.data));
+        HistoryWidget.hideSave();
+    },
+
+    hideSave: function() {
+        h.taskSaveArea.addClass('hide');
+    },
+
+    clearHistory: function(params) {
+
+        $.each(h.data, function (index, params) {
+            $('#' + params.id).remove();
+        });
+        localStorage.clear();
+
+    },
+
+    storeLocally: function(params) {
+        // Saving element in local storage
+        h.data[params.id] = params;
+        localStorage.setItem("taskData", JSON.stringify(h.data));
+
+        HistoryWidget.addTask(params);
+    },
+
+    addTask: function(params) {
+        var defaults = {
+          // CSS selectors and attributes that would be used by the JavaScript functions
+          taskItem: "history__task-item",
+          taskDescription: "history__task-description",
+          taskTime: "history__task-time",
+          taskStart: "history__task-start",
+          taskEnd: "history__task-end",
+          id: params.id
+        };
+
+        var wrapper = $("<tr>", {
+            "class" : defaults.taskItem,
+            "id": defaults.id
+        }).appendTo($('#history-data-table'));
+
+        $("<td>", {
+            "class" : defaults.taskDescription,
+            "text": params.description,
+            "contenteditable": 'true'
+        }).appendTo(wrapper);
+
+        $("<td>", {
+            "class" : defaults.taskTime,
+            "text": params.timeTaken
+          }).appendTo(wrapper);
+
+        $("<td>", {
+            "class" : defaults.taskStart,
+            "text": params.timeStarted
+          }).appendTo(wrapper);
+
+        $("<td>", {
+            "class" : defaults.taskEnd,
+            "text": params.timeEnded
+        }).appendTo(wrapper);
+
+        $("<button>", {
+            "class" : 'edit-task',
+            "id" : 'edit-task-' + params.id,
+            "text" : 'Edit'
+        }).appendTo(wrapper);
+    
+        h.taskArea.addClass('hide');
     }
 };
 

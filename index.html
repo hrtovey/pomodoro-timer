@@ -4,10 +4,12 @@
 	<meta charset="UTF-8">
 	<title>Pomodoro Clock</title>
 	<link rel="stylesheet" href="style.css">
+
+	
 </head>
 <body>
 <main>
-	<div id="settings" class="settings">
+	<div id="settings" class="settings hide non-print">
 		<p class="instructions">Set the timer and choose your task. Then press Start.</p>
 		<div class="form-input">
 			<label for="time-input">Length of Pomodoro</label>
@@ -24,7 +26,7 @@
 		<button id="save-settings" class="save">Save</button>
 		<button id="cancel-settings" class="cancel">Cancel</button>
 	</div>
-	<div id="timer" class="timer hide">
+	<div id="timer" class="timer non-print">
 		<button id="start-pomodoro">Pomodoro</button>
 		<button id="start-short-break">Short Break</button>
 		<button id="start-long-break">Long Break</button>
@@ -33,21 +35,22 @@
 		<div id="time" class="time hide">
 			<span id="minute-display"></span>:<span id="second-display"></span>
 		</div>
-		<div class="paused-text">Paused for <span id="pause-time"></span></div>
-		<button id="start" class="pause-start start">Start</button>
-		<button id="pause" class="pause-start pause hide">Pause</button>
+		<div id="pause-text" class="pause-text hide">Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span></div>
+		<button id="start-timer" class="pause-start start hide">Start</button>
+		<button id="pause-timer" class="pause-start pause hide">Pause</button>
 		<p id="pomo-finished"></p>
 	</div>
 	<div id="history-section">
-		<div id="task-area" class="form-input hide">
+		<div id="task-area" class="form-input non-print hide">
 			<label for="task">Task</label>
 			<input id='task-input' class="task-input" placeholder="Create a pomodoro clock">
 			<button id="task-input-button">Save Task</button>
 		</div>
-		<div class="" id="history-data">
-			<button id="clear-history">Clear History</button>
+		<div class="hide" id="history-data">
+			<button id="export-table" class="non-print">Print</button>
+			<button id="clear-history" class="non-print">Clear History</button>
 			<table id="history-data-table">
-				<tr>
+				<tr id="table-header">
 					<th>Task</th>
 					<th>Time</th>
 					<th>Start</th>
@@ -64,7 +67,9 @@
 
 
 	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="moment.min.js"></script>
-	<script src="timer.js"></script>	
+	<script src="js/moment.min.js"></script>
+	<script type="text/javascript" src="js/jspdf.debug.js"></script>
+	<script src="js/jspdf.plugin.autotable.js"></script>
+	<script src="js/timer.js"></script>	
 </body>
 </html>

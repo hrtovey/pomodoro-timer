@@ -1,4 +1,12 @@
 var t,
+TimerWidget,
+s,
+SettingsWidget,
+h,
+HistoryWidget;
+
+
+var t,
 TimerWidget = {
     settings: {
         timerSection: $('#timer'),
@@ -8,7 +16,7 @@ TimerWidget = {
         startLongBreakButton: $('#start-long-break'),
         runningTimer: '',
         timerBegin: 0,
-        timerCountdown: 0,
+        timerCountdown: 25 * 60,
         timerStart: moment(),
         pomoCount: 0,
         statement: $('#statement'),
@@ -29,6 +37,8 @@ TimerWidget = {
         t = this.settings;
         this.bindUIActions();
 
+        TimerWidget.displayTimer(t.timerCountdown);
+
     },
 
     bindUIActions: function() {
@@ -38,7 +48,10 @@ TimerWidget = {
 
         t.startPomodoroButton.on('click', function() {
             TimerWidget.cancelTimer();
-            TimerWidget.showTaskInput();
+            h.currentTask = h.taskInput.val();
+            t.timerSection.removeClass('hide');
+            t.timerType = 'pomo';
+            TimerWidget.startTimer(s.timerSetting, t.timerType);
         });
 
         t.startShortBreakButton.on('click', function() {
@@ -57,12 +70,12 @@ TimerWidget = {
 
         t.pauseTimerButton.on('click', function() {
             TimerWidget.pauseTimer();
-        })
+        });
 
         t.startTimerButton.on('click', function() {
             TimerWidget.cancelPauseTimer();
             TimerWidget.startTimer(t.timerCountdown, t.timerType);
-        })
+        });
     },
 
     pauseTimer: function() {
@@ -88,12 +101,6 @@ TimerWidget = {
         t.runningPauseTimer = setInterval(TimerWidget.intervalTimerUp, 1000);
     },
 
-    showTaskInput: function() {
-        t.timerSection.addClass('hide');
-        h.taskArea.removeClass('hide');
-        t.statement.addClass('hide');
-    },
-
     cancelTimer: function(type) {
         t.timerEnd = moment();
         clearInterval(t.runningTimer);
@@ -112,7 +119,6 @@ TimerWidget = {
         t.timerStart = moment();
         t.timerCountdown = setting;
         t.statement.addClass('hide');
-        h.taskArea.addClass('hide');
         TimerWidget.displayTimer(t.timerCountdown);
         t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, type);
         t.pauseTimerButton.removeClass('hide');
@@ -122,9 +128,9 @@ TimerWidget = {
     chooseStatement: function(type) {
         if (type === 'pomo') {
             if (t.pomoCount % 4 === 0) {
-                return "Take a long break!"
+                return "Take a long break!";
             } else {
-                return "Take a short break!"
+                return "Take a short break!";
             }
         } else {
             return "Back to work with you!";
@@ -231,23 +237,20 @@ SettingsWidget = {
 
     saveSettings: function() {
         TimerWidget.cancelTimer();
-        t.statement.addClass('hide');
         s.timerSetting = s.timeInput.val() * 60;
         s.shortBreakSetting = s.shortBreakInput.val() * 60;
         s.longBreakSetting = s.longBreakInput.val() * 60;
         SettingsWidget.exitSettings();
+        TimerWidget.displayTimer(s.timerSetting);
     },
 
     enterSettings: function() {
-        t.timerSection.addClass('hide');
-        h.taskArea.addClass('hide');
         s.settingsSection.removeClass('hide');
     },
 
     exitSettings: function() {
         s.settingsSection.addClass('hide');
         t.timerSection.removeClass('hide');
-        $('#time').addClass('hide');
     }
 };
 
@@ -260,7 +263,6 @@ HistoryWidget = {
         historyData: $('#history-data'),
         historyDataTable: $('#history-data-table'),
         taskInputButton: $('#task-input-button'),
-        historyDataTable: $('#history-data-table'),
         data: JSON.parse(localStorage.getItem("taskData")) || {},
         clearHistory: $('#clear-history'),
         saveButton: $('#save-button'),
@@ -287,14 +289,6 @@ HistoryWidget = {
     },
 
     bindUIActions: function() {
-        h.taskInputButton.on('click', function() {
-
-            h.currentTask = h.taskInput.val();
-            t.timerSection.removeClass('hide');
-            t.timerType = 'pomo';
-            TimerWidget.startTimer(s.timerSetting, t.timerType);
-
-        });
 
         h.taskInput.keyup(function(e) {
             if (e.which === 13) {
@@ -311,7 +305,7 @@ HistoryWidget = {
         });
 
         h.historyDataTable.on('focus', '.history__task-description', function() {
-            HistoryWidget.showSave($(this).parent().attr('id'));
+            HistoryWidget.showSave($(this).attr('id'));
         });
 
         h.historyDataTable.on('keydown', '.history__task-description', function(e) {
@@ -319,7 +313,7 @@ HistoryWidget = {
                 $(this).blur();
             }
 
-            return e.which != 13;
+            return e.which !== 13;
         });
 
         h.saveButton.on('click', function() {
@@ -346,7 +340,8 @@ HistoryWidget = {
     },
 
     editTask: function(id) {
-        $(id).siblings('.history__task-description').focus();
+        var taskId = $(id).attr('id');
+        $('#task-' + taskId).focus();
     },
 
     cancelSave: function() {
@@ -355,19 +350,20 @@ HistoryWidget = {
     },
 
     showSave: function(id) {
-        h.oldTaskInfo = $('#' + id + '>.history__task-description').text();
+        h.oldTaskInfo = $(id).text();
         h.currentTaskEdit = id;
         h.taskSaveArea.removeClass('hide');
     },
 
     saveTask: function(id) {
         // stores new content in localstorage
-        h.data[id]['description'] = $('#' + h.currentTaskEdit + '>.history__task-description').text();
+        var item = $('#' + id).parent().parent().attr('id');
+        h.data[item].description = $('#' + h.currentTaskEdit).text();
         localStorage.setItem("taskData", JSON.stringify(h.data));
         
-        for (i=0; i< h.row.length; i++) {
-            if (h.row[i].id === id) {
-                h.row[i].task = $('#' + h.currentTaskEdit + '>.history__task-description').text();
+        for (var i=0; i< h.row.length; i++) {
+            if (h.row[i].id === item) {
+                h.row[i].task = $('#' + h.currentTaskEdit).text();
                 localStorage.setItem("rowData", JSON.stringify(h.row));
             }
         }
@@ -378,7 +374,7 @@ HistoryWidget = {
         h.taskSaveArea.addClass('hide');
     },
 
-    clearHistory: function(params) {
+    clearHistory: function() {
 
         $.each(h.data, function (index, params) {
             $('#' + params.id).remove();
@@ -432,36 +428,44 @@ HistoryWidget = {
         var wrapper = $("<tr>", {
             "class" : defaults.taskItem,
             "id": defaults.id
-        }).insertAfter($('#table-header'));
+        }).prependTo($('#history-data-body'));
 
         $("<td>", {
+            "class": 'description-container',
+            "id": defaults.id + '-container',
+            "data-label": "Task"
+        }).appendTo(wrapper);
+
+        $("<div>", {
             "class" : defaults.taskDescription,
             "text": params.description,
+            "id": 'task-edit-' + params.id,
             "contenteditable": 'true'
-        }).appendTo(wrapper);
+        }).appendTo($("#" + defaults.id + "-container"));
+
+        $("<button>", {
+            "class" : 'edit-task',
+            "id" : 'edit-' + params.id,
+            "text" : 'Edit'
+        }).insertAfter($('#task-edit-' + params.id));
 
         $("<td>", {
             "class" : defaults.taskTime,
-            "text": params.timeTaken
+            "text": params.timeTaken,
+            "data-label": "Time"
           }).appendTo(wrapper);
 
         $("<td>", {
             "class" : defaults.taskStart,
-            "text": params.timeStarted
+            "text": params.timeStarted,
+            "data-label": "Start"
           }).appendTo(wrapper);
 
         $("<td>", {
             "class" : defaults.taskEnd,
-            "text": params.timeEnded
+            "text": params.timeEnded,
+            "data-label": "End"
         }).appendTo(wrapper);
-
-        $("<button>", {
-            "class" : 'edit-task non-print',
-            "id" : 'edit-task-' + params.id,
-            "text" : 'Edit'
-        }).appendTo(wrapper);
-    
-        h.taskArea.addClass('hide');
     }
 };
 

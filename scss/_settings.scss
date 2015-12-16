@@ -1,0 +1,46 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.settings-modal {
+	background: $background-gray;
+	margin:auto;
+	width: 370px;
+	top:25%;
+	position:relative;
+	padding: 2rem;
+	border-radius:5px;
+	box-shadow: 0 2px 20px 0 #000;
+}
+
+.settings-input {
+	margin: 1rem 0;
+	width:30px;
+    min-width: 30px;
+    text-align: center;
+    background: $background_gray;
+    border: 0;
+    border-bottom: 2px solid $light_gray;
+    color: white;
+    display:inline-block;
+}
+
+.settings-label, .input-box {
+	display:inline-block;
+	width:50%;
+}
+
+.input-box {
+	text-align:right;
+}
+
+.instructions {
+	border-bottom: 1px solid $light-gray;
+	padding-bottom: 5px;
+}

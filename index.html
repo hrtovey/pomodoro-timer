@@ -2,64 +2,122 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Pomodoro Clock</title>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="css/style.css">
 
 	
 </head>
 <body>
+<header class="background-gray container">
+	<img src="img/logo.png" class="logo">
+	<h1>Pomodoro<span class="text--accent1">&plus;</span></h1>
+
+	<nav class="navigation">
+	<ul class="nav-items">
+		<li class="nav-item"><button id="change-settings" class="header-button">Settings</button></li>
+		<li class="nav-item"><button id="show-about" class="header-button">About</button></li>
+	</ul>
+</header>
 <main>
-	<div id="settings" class="settings hide non-print">
-		<p class="instructions">Set the timer and choose your task. Then press Start.</p>
-		<div class="form-input">
-			<label for="time-input">Length of Pomodoro</label>
-			<input id="time-input" value="25"> <span class="input-label">minutes</span>
+
+	
+
+	<div id="timer" class="timer container-main background-gray">
+
+		<div id="task-area" class="form-input task-area">
+			<input id='task-input' class="task-input" placeholder="What are you working on?">
+
+		<div class="buttons">
+			<button id="start-pomodoro" class="button__main">Start Timer</button>
+
+			<button id="start-short-break" class="hide button__accent">Short Break</button>
+
+			<button id="start-long-break" class="hide button__main">Long Break</button>
 		</div>
-		<div class="form-input">
-			<label for="short-break">Length of Short Break</label>
-			<input id="short-break" value="5"> <span class="input-label">minutes</span>
+		</div><!--
+	 --><div class="timer-area">
+	 		<div class="tomato">
+				<div id="time" class="time">
+					<span id="minute-display"></span>:<span id="second-display"></span>
+				</div>
+
+				<div id="pause-text" class="pause-text hide">
+					Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span>
+				</div>
+
+				<button id="start-timer" class="pause-start start hide">Start</button>
+
+				<button id="pause-timer" class="pause-start pause hide">Pause</button>
+			</div>
+
 		</div>
-		<div class="form-input">
-			<label for="long-break">Length of Long Break</label>
-			<input id="long-break" value="20"> <span class="input-label">minutes</span>
-		</div>
-		<button id="save-settings" class="save">Save</button>
-		<button id="cancel-settings" class="cancel">Cancel</button>
 	</div>
-	<div id="timer" class="timer non-print">
-		<button id="start-pomodoro">Pomodoro</button>
-		<button id="start-short-break">Short Break</button>
-		<button id="start-long-break">Long Break</button>
-		<button id="change-settings">Change Settings</button>
-		<p class='hide' id="statement"></p>
-		<div id="time" class="time hide">
-			<span id="minute-display"></span>:<span id="second-display"></span>
-		</div>
-		<div id="pause-text" class="pause-text hide">Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span></div>
-		<button id="start-timer" class="pause-start start hide">Start</button>
-		<button id="pause-timer" class="pause-start pause hide">Pause</button>
-		<p id="pomo-finished"></p>
-	</div>
-	<div id="history-section">
-		<div id="task-area" class="form-input non-print hide">
-			<label for="task">Task</label>
-			<input id='task-input' class="task-input" placeholder="Create a pomodoro clock">
-			<button id="task-input-button">Save Task</button>
-		</div>
+
+	<div id="history-section" class="container-main">
+
+		
+
 		<div class="hide" id="history-data">
 			<button id="export-table" class="non-print">Print</button>
 			<button id="clear-history" class="non-print">Clear History</button>
 			<table id="history-data-table">
+			<thead>
 				<tr id="table-header">
 					<th>Task</th>
 					<th>Time</th>
 					<th>Start</th>
 					<th>End</th>
 				</tr>
+			</thead>
+			<tbody id="history-data-body">
+
+			</tbody>
 			</table>
 			<div id="task-save-area" class="task-save-area hide">
 				<button class="save-button" id="save-button">Save</button><button class="cancel-button" id="cancel-button">Cancel</button>
 			</div>
+		</div>
+	
+	</div>
+	
+	<div id="settings" class="overlay hide">
+		<div class="settings-modal">
+
+			<h2 class="instructions">Timer Settings</h2>
+
+			<div class="form-input">
+				<label for="time-input" class="settings-label">Length of Pomodoro</label><!--
+				--><div class="input-box">
+					<input id="time-input" class="settings-input" value="25"> <span class="input-label">minutes</span>
+				</div>
+			</div>
+
+			<div class="form-input">
+				<label class="settings-label" for="short-break">Length of Short Break</label><!--
+				--><div class="input-box">
+					<input id="short-break" class="settings-input" value="5"> <span class="input-label">minutes</span>
+				</div>
+			</div>
+
+			<div class="form-input">
+				<label for="long-break" class="settings-label">Length of Long Break</label><!--
+				--><div class="input-box">
+					<input id="long-break" class="settings-input" value="5"> <span class="input-label">minutes</span>
+				</div>
+			</div>
+
+			<div class="width-50 save-container">
+				<button id="save-settings" class="save button__main">Save</button>
+			</div><!--
+
+		 --><div class="width-50 cancel-container">
+				<button id="cancel-settings" class="cancel button__secondary">Cancel</button>
+			</div>
+
 		</div>
 	</div>
 
@@ -67,6 +125,7 @@
 
 
 	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/materialize.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script type="text/javascript" src="js/jspdf.debug.js"></script>
 	<script src="js/jspdf.plugin.autotable.js"></script>

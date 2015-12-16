@@ -1,0 +1,28 @@
+.task-input {
+	background:none;
+	border:none;
+	color: #FFFFFF;
+	width:100%;
+	padding:10px 10px 10px 0;
+	border-bottom: 2px solid $light-gray;
+	margin-bottom: 1rem;
+}
+
+
+.timer-area {
+	width:30%;
+	display:inline-block;
+}
+
+.task-area {
+	width:70%;
+	display:inline-block;
+}
+
+.tomato {
+	background-image: url('../img/tomato.png');
+	height:176px;
+	width:185px;
+	background-repeat:no-repeat;
+	display:inline-block;
+}

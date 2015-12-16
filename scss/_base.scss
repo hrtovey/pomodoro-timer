@@ -1,0 +1,66 @@
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.hide {
+    display:none;
+}
+
+html, body {
+  min-height: 100%;
+}
+body {
+    background:#18191B;
+    color:#fff;
+    font-family: "Lato", sans-serif;
+    position:relative;
+}
+
+.container, .container-main {
+    padding: 20px;
+}
+
+.background-gray {
+    background: #34353A;
+}
+
+
+
+.text--accent1 {
+    color:#FF0042;
+}
+
+h1 {
+    margin:0;
+}
+
+h1, .logo {
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.navigation {
+    float:right;
+    line-height:35px;
+}
+
+.nav-items {
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    display:inline-block;
+}
+
+.nav-item {
+    display:inline-block;
+    padding-left: 20px;
+}
+
+input {
+    color: #18191B;
+}
+

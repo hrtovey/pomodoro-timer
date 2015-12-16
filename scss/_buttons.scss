@@ -1,0 +1,50 @@
+button {
+    color:#34353A;
+    border-radius:5px;
+    padding:5px 10px;
+}
+
+.button__main {
+	background: $accent2;
+	border:1px solid darken($accent2, 30%);
+}
+
+.button__accent {
+	background: $accent3;
+	border:1px solid darken($accent3, 30%);
+}
+
+.button__secondary {
+	background: $light-gray;
+	border:1px solid darken($light-gray, 30%);
+}
+
+.save, .cancel {
+	width: 100%;
+}
+
+.save-container {
+	padding-right:10px;
+}
+
+.cancel-container {
+	padding-left:10px;
+}
+
+.width-50 {
+	width:50%;
+	display:inline-block;
+}
+
+.header-button {
+	background: none;
+    border: none;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.task-input-button {
+	display:block;
+}

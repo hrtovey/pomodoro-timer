@@ -40,9 +40,12 @@
 		</div>
 		</div><!--
 	 --><div class="timer-area">
-	 		<div class="tomato">
+	 		<div id="background-image" class="tomato">
 				<div id="time" class="time">
-					<span id="minute-display"></span>:<span id="second-display"></span>
+					<canvas id="timer-animation" width="250" height="250" class="hide">
+						<span id="minute-display"></span>:<span id="second-display"></span>
+					</canvas> 
+					
 				</div>
 
 				<div id="pause-text" class="pause-text hide">
@@ -124,11 +127,14 @@
 </main>
 
 
-	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+	<script src="js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="js/materialize.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script type="text/javascript" src="js/jspdf.debug.js"></script>
 	<script src="js/jspdf.plugin.autotable.js"></script>
-	<script src="js/timer.js"></script>	
+	<script src="js/min/timer-min.js"></script>
+	
+	<script src="js/progress.js"></script>
 </body>
 </html>

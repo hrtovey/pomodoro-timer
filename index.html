@@ -24,56 +24,76 @@
 </header>
 <main>
 
-	
+	<div class="background-gray">
 
-	<div id="timer" class="timer container-main background-gray">
+		<div id="timer" class="timer container-main">
+		
+		<div class="timer-area">
+		 		<div id="background-image" class="tomato">
+		 		
+					<div id="start-time" class="start-time"></div>
+					<div id="time" class="time hide">
+						<canvas id="timer-animation" width="215" height="215" class="">
+							<span id="minute-display"></span>:<span id="second-display"></span>
+						</canvas> 
+						<div class="pause-area">
+							<div id="pause-text" class="pause-text hide">
+								Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span>
+							</div>
 
-		<div id="task-area" class="form-input task-area">
-			<input id='task-input' class="task-input" placeholder="What are you working on?">
+							<button id="pause-play" class="play-button" href="#">
+							  <div class="left"></div>
+							  <div class="right"></div>
+							  <div class="triangle-1"></div>
+							  <div class="triangle-2"></div>
+							</button>
 
-		<div class="buttons">
-			<button id="start-pomodoro" class="button__main">Start Timer</button>
+						</div>
+					</div>
 
-			<button id="start-short-break" class="hide button__accent">Short Break</button>
-
-			<button id="start-long-break" class="hide button__main">Long Break</button>
-		</div>
-		</div><!--
-	 --><div class="timer-area">
-	 		<div id="background-image" class="tomato">
-				<div id="time" class="time">
-					<canvas id="timer-animation" width="250" height="250" class="hide">
-						<span id="minute-display"></span>:<span id="second-display"></span>
-					</canvas> 
-					
 				</div>
 
-				<div id="pause-text" class="pause-text hide">
-					Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span>
-				</div>
+			</div><!--
 
-				<button id="start-timer" class="pause-start start hide">Start</button>
+		 --><div id="task-area" class="form-input task-area">
+				<input id='task-input' class="task-input" placeholder="What are you working on?">
 
-				<button id="pause-timer" class="pause-start pause hide">Pause</button>
+			<div class="buttons">
+				<button id="start-pomodoro" class="button__main">Start Timer</button>
+
+				<button id="start-short-break" class="hide button__accent">Short Break</button>
+
+				<button id="start-long-break" class="hide button__main">Long Break</button>
 			</div>
-
+			</div>
 		</div>
 	</div>
-
-	<div id="history-section" class="container-main">
-
+	<div id="history-section" class="container-main history-section">
+	<h2>Task History</h2>
+		
+		<div id="history-empty" class="history-empty hide">
+			<svg class="arrow-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" width="103" height="113" viewBox="0 0 103 113" version="1.1"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><path d="M97.31 74.94L74.96 52.59 79.13 48.42 108.34 77.63 79.13 106.84 74.96 102.67 96.7 80.93C96.53 80.95 96.36 80.96 96.19 80.98 82.42 82.23 67.29 81.73 52.95 78.18 42.71 75.65 33.65 71.68 26.13 66.06 18.91 60.66 12.9 54.22 8 46.96 2.6 38.98-1.19 30.44-3.66 21.9 -4.53 18.9-5.17 16.12-5.62 13.61 -5.89 12.08-6.04 10.97-6.1 10.34L-6.38 7.41 -0.51 6.84 -0.22 9.78C-0.18 10.25-0.05 11.21 0.19 12.57 0.61 14.88 1.2 17.47 2.01 20.26 4.32 28.24 7.86 36.22 12.89 43.66 17.43 50.38 22.99 56.34 29.66 61.33 36.5 66.44 44.84 70.09 54.37 72.45 67.97 75.82 82.48 76.3 95.65 75.1 96.25 75.05 96.8 74.99 97.31 74.94L97.31 74.94Z" id="Shape" fill="#FFFFFF" sketch:type="MSShapeGroup" transform="translate(50.981233, 56.841043) scale(-1, 1) rotate(-88.000000) translate(-50.981233, -56.841043) "/></g></svg>
+			<div class="history-empty-container">
+				<quote>“The secret to getting ahead is getting started.” ~ Agatha Christie</quote>
+				<h3>Your task history seems to be a bit empty.</h3>
+				<p>What are you waiting for? Start a pomodoro!</p>
+				<p>Once you complete a pomodoro (or get interrupted), you'll find your task history here.</p>
+			</div>
+		
+			
+		</div>
 		
 
-		<div class="hide" id="history-data">
+		<div class="hide history-data" id="history-data">
 			<button id="export-table" class="non-print">Print</button>
 			<button id="clear-history" class="non-print">Clear History</button>
 			<table id="history-data-table">
 			<thead>
-				<tr id="table-header">
+				<tr id="table-header" class="table-header">
+					<th>Duration</th>
 					<th>Task</th>
-					<th>Time</th>
 					<th>Start</th>
-					<th>End</th>
+					<th>Stop</th>
 				</tr>
 			</thead>
 			<tbody id="history-data-body">
@@ -133,8 +153,6 @@
 	<script src="js/moment.min.js"></script>
 	<script type="text/javascript" src="js/jspdf.debug.js"></script>
 	<script src="js/jspdf.plugin.autotable.js"></script>
-	<script src="js/min/timer-min.js"></script>
-	
-	<script src="js/progress.js"></script>
+	<script src="js/timer.js"></script>
 </body>
 </html>

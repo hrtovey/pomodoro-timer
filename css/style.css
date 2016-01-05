@@ -363,3 +363,19 @@ button {
   color: #EE424E;
   font-weight: 300;
   font-size: 18px; }
+
+.progress-notification {
+  text-transform: uppercase;
+  font-size: 14px;
+  display: block;
+  line-height: 36px;
+  margin: -14px auto 14px; }
+
+.progress-notification.pomodoro-progress {
+  color: #f6a0a6; }
+
+.progress-notification.short-break-progress {
+  color: #3be5ff; }
+
+.progress-notification.long-break-progress {
+  color: #cde5b2; }

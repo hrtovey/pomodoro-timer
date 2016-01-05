@@ -242,16 +242,26 @@ button {
   position: absolute;
   background: none;
   border: 0;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 0;
-  top: 24px;
-  left: 48px; }
+  top: 23px;
+  left: 51px;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease; }
+
+.play-button:focus {
+  outline: none; }
+
+.play-button.paused {
+  top: 23px;
+  left: 57px;
+  padding: 8px; }
 
 .left {
   height: 100%;
   float: left;
   background-color: #979797;
-  width: 20%;
+  width: 6px;
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease;
   overflow: hidden; }
@@ -283,7 +293,7 @@ button {
 .right {
   height: 100%;
   float: right;
-  width: 20%;
+  width: 6px;
   background-color: #979797;
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease; }
@@ -354,8 +364,8 @@ button {
 
 .pause-area {
   position: absolute;
-  left: 35.5px;
-  top: 56%;
+  left: 15%;
+  top: 52%;
   text-align: center;
   width: 150px; }
 

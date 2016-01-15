@@ -19,6 +19,10 @@
 	box-shadow: 0 2px 20px 0 #000;
 }
 
+.settings-modal:focus {
+	outline:none;
+}
+
 .settings-input {
 	margin: 1rem 0;
 	width:30px;
@@ -44,3 +48,4 @@
 	border-bottom: 1px solid $light-gray;
 	padding-bottom: 5px;
 }
+

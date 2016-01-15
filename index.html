@@ -4,9 +4,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Pomodoro Clock</title>
-	<link rel="stylesheet" href="css/normalize.css">
 	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/style.css">
 
 	
@@ -14,12 +14,13 @@
 <body>
 <header class="background-gray container">
 	<img src="img/logo.png" class="logo">
-	<h1>Pomodoro<span class="text--accent1">&plus;</span></h1>
+	<a href="index.html" class="logo"><h1>Pomodoro<span class="text--accent2">&plus;</span></h1></a>
+	
 
 	<nav class="navigation">
 	<ul class="nav-items">
-		<li class="nav-item"><button id="change-settings" class="header-button">Settings</button></li>
-		<li class="nav-item"><button id="show-about" class="header-button">About</button></li>
+		<li class="nav-item"><button id="change-settings" class="header-button waves-effect waves-light">Settings</button></li>
+		<li class="nav-item"><button id="show-about" class="header-button waves-light waves-effect">About</button></li>
 	</ul>
 </header>
 <main>
@@ -29,14 +30,15 @@
 		<div id="timer" class="timer container-main">
 		
 		<div class="timer-area">
-		 		<div id="background-image" class="tomato">
-		 		
-					<div id="start-time" class="start-time"></div>
-					<div id="time" class="time hide">
+		 		<div id="background-image" class="background-image background__pomodoro">
+		 			<div id="start-time" class="start-time"></div>
+				</div>
+				<div id="time" class="time fade-out">
 						<canvas id="timer-animation" width="215" height="215" class="">
 							<span id="minute-display"></span>:<span id="second-display"></span>
 						</canvas> 
-						<div class="pause-area">
+						<div id="pause-area" class="pause-area hide">
+							<button id="reset" class="reset"></button>
 							<div id="pause-text" class="pause-text hide">
 								Paused for <span id="pause-time"><span id="pause-minute-display"></span>:<span id="pause-second-display"></span>
 							</div>
@@ -51,8 +53,6 @@
 						</div>
 					</div>
 
-				</div>
-
 			</div><!--
 
 		 --><div id="task-area" class="form-input task-area">
@@ -60,19 +60,20 @@
 				<div id="task-written" class="task-input hide"></div>
 
 			<div class="buttons">
-				<button id="start-pomodoro" class="button__main">Start Timer</button>
+				<button id="start-pomodoro" class="button button__accent1 waves-effect waves-light">Start Timer</button>
 
-				<button id="start-short-break" class="hide button__accent">Short Break</button>
+				<button id="start-short-break" class="hide button button__accent2 waves-effect waves-light">Short Break</button>
 
-				<button id="start-long-break" class="hide button__main">Long Break</button>
+				<button id="start-long-break" class="hide button button__accent3 waves-effect waves-light">Long Break</button>
 				<span id="progress-notification" class="progress-notification hide pomodoro-progress">In Progress</span>
 			</div>
 			</div>
 		</div>
 	</div>
+
+
 	<div id="history-section" class="container-main history-section">
-	<h2>Task History</h2>
-		
+
 		<div id="history-empty" class="history-empty hide">
 			<svg class="arrow-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" width="103" height="113" viewBox="0 0 103 113" version="1.1"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><path d="M97.31 74.94L74.96 52.59 79.13 48.42 108.34 77.63 79.13 106.84 74.96 102.67 96.7 80.93C96.53 80.95 96.36 80.96 96.19 80.98 82.42 82.23 67.29 81.73 52.95 78.18 42.71 75.65 33.65 71.68 26.13 66.06 18.91 60.66 12.9 54.22 8 46.96 2.6 38.98-1.19 30.44-3.66 21.9 -4.53 18.9-5.17 16.12-5.62 13.61 -5.89 12.08-6.04 10.97-6.1 10.34L-6.38 7.41 -0.51 6.84 -0.22 9.78C-0.18 10.25-0.05 11.21 0.19 12.57 0.61 14.88 1.2 17.47 2.01 20.26 4.32 28.24 7.86 36.22 12.89 43.66 17.43 50.38 22.99 56.34 29.66 61.33 36.5 66.44 44.84 70.09 54.37 72.45 67.97 75.82 82.48 76.3 95.65 75.1 96.25 75.05 96.8 74.99 97.31 74.94L97.31 74.94Z" id="Shape" fill="#FFFFFF" sketch:type="MSShapeGroup" transform="translate(50.981233, 56.841043) scale(-1, 1) rotate(-88.000000) translate(-50.981233, -56.841043) "/></g></svg>
 			<div class="history-empty-container">
@@ -80,30 +81,37 @@
 				<h3>Your task history seems to be a bit empty.</h3>
 				<p>What are you waiting for? Start a pomodoro!</p>
 				<p>Once you complete a pomodoro (or get interrupted), you'll find your task history here.</p>
-			</div>
-		
-			
+			</div>	
 		</div>
-		
 
-		<div class="hide history-data" id="history-data">
-			<button id="export-table" class="non-print">Print</button>
-			<button id="clear-history" class="non-print">Clear History</button>
-			<div id="history-data-table">
-				<div id="history-data-body">
-					
+		<div class="history-data hide" id="history-data">
+			<div class="task-history">
+				<div class="history-header cf">
+					<h2 class="history-header__title">Task History</h2>
+					<button id="clear-history" class="button-ghost waves-effect waves-light clear-history text--accent2">Clear</button>
 				</div>
-			</div>
 
-			<div id="task-save-area" class="task-save-area hide">
-				<button class="save-button" id="save-button">Save</button><button class="cancel-button" id="cancel-button">Cancel</button>
+				<div class="task-container">
+
+					<div class="download">
+						Download as: <button id="export-table" class="button-ghost button-download waves-effect waves-light text--accent1">Print</button><button id="export-csv" class="button-ghost button-download text--accent1 waves-effect waves-light">CSV</button>
+					</div>			
+
+					
+
+					<div id="history-data-table">
+						<div id="history-data-body">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	
 	</div>
-	
+
+
 	<div id="settings" class="overlay hide">
-		<div class="settings-modal">
+		<div class="settings-modal" tabindex='-1'>
 
 			<h2 class="instructions">Timer Settings</h2>
 
@@ -129,17 +137,20 @@
 			</div>
 
 			<div class="width-50 save-container">
-				<button id="save-settings" class="save button__main">Save</button>
+				<button id="save-settings" class="save button__main waves-effect waves-light">Save</button>
 			</div><!--
 
 		 --><div class="width-50 cancel-container">
-				<button id="cancel-settings" class="cancel button__secondary">Cancel</button>
+				<button id="cancel-settings" class="cancel button__secondary waves-effect waves-light">Cancel</button>
 			</div>
 
 		</div>
 	</div>
 
 </main>
+
+
+
 
 
 

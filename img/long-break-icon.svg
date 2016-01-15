@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.4 (17249) - http://www.bohemiancoding.com/sketch -->
+    <title>Star 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="25.0674357%" y1="93.6423505%" x2="76.0760188%" y2="6.12309477%" id="linearGradient-1">
+            <stop stop-color="#9ACD6D" offset="0%"></stop>
+            <stop stop-color="#36F6FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Desktop---Main-View" sketch:type="MSArtboardGroup" transform="translate(-238.000000, -772.000000)" fill="url(#linearGradient-1)">
+            <g id="Star-1" sketch:type="MSLayerGroup" transform="translate(233.000000, 767.000000)">
+                <g transform="translate(5.000000, 5.000000)" id="Page-1" sketch:type="MSShapeGroup">
+                    <g>
+                        <path d="M10,17.3504613 L7.32050807,20 L6.32476936,16.3656862 L2.67949193,17.3205081 L3.63431381,13.6752307 L1.14938745e-15,12.6794919 L2.64953873,10 L0,7.32050807 L3.63431381,6.32476936 L2.67949193,2.67949193 L6.32476936,3.63431381 L7.32050807,7.00087604e-15 L10,2.64953873 L12.6794919,3.55271368e-15 L13.6752307,3.63431381 L17.3205081,2.67949193 L16.3656862,6.32476936 L20,7.32050807 L17.3504613,10 L20,12.6794919 L16.3656862,13.6752307 L17.3205081,17.3205081 L13.6752307,16.3656862 L12.6794919,20 L10,17.3504613 Z" id="Star-1"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

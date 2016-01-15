@@ -1,14 +1,22 @@
-// Add second empty state explaining that you're waiting on data for Task History.
-// Add a reset button - reset when you save settings
-// Transform/animate timer clock moving up a bit to make room for Pause info.
-// Pretty up the buttons using Materialize CSS
-// Pretty up the Task History Section
 // Pretty up the PDF pages
-// Add pomodoro icon to completed pomodoro areas
 // Maybe export as CSV
 // Responsivize it
 // Add an About page
-// Today, Date
+// Settings should be stored in local storage
+// Enable Desktop Alerts
+// Sound and Volume Control on Settings
+
+
+// Issues:
+// - Fix Printed text (need more accurate duration data)
+
+
+// Final Pieces:
+// - Tidy up your JS and CSS - any duplicate code should go into functions...see how small you can make the JS
+// Consider tidying up CSS to conform to Trello CSS Guide
+// Minimize, gzip and all that. Make this TINY and make it load quickly
+// Back up google fonts so they don't load forever?
+
 
 
 var t,
@@ -23,6 +31,7 @@ var t,
 TimerWidget = {
     settings: {
         timerSection: $('#timer'),
+        timer: $('#time'),
         changeSettingsButton: $('#change-settings'),
         startPomodoroButton: $('#start-pomodoro'),
         startShortBreakButton: $('#start-short-break'),
@@ -37,13 +46,14 @@ TimerWidget = {
         pomoCount: 0,
         statement: $('#statement'),
         timerEnd: moment(),
-        timerType: '',
+        timerType: 'pomo',
         runningPauseTimer: '',
         pauseCounter: 0,
         pauseStartMoment: moment(),
         pauseTime: $('#pause-time'),
         count: 0,
         pauseCurrentMoment: moment(),
+        pauseArea: $('#pause-area'),
         pauseText: $('#pause-text'),
         canvas: 0,
         ctx: 0,
@@ -61,14 +71,18 @@ TimerWidget = {
         animation_loop: '',
         redraw_loop: '', //Draw a new chart every 2 seconds
         degreeCalculation: 360 / 1500,
-        playpause: true
+        playpause: true,
+        resetButton: $('#reset'),
+        pauseMinuteDisplay: $('#pause-minute-display'),
+        pauseSecondDisplay: $('#pause-second-display'),
+        backgroundImage: $('#background-image'),
+        startTime: $('#start-time')
     },
 
     init: function() {
         t = this.settings;
         this.bindUIActions();
         TimerWidget.displayTimerFoyer(t.timerCountdown);
-
         // Animate Timer
 
         t.canvas = $("#timer-animation")[0];
@@ -87,6 +101,10 @@ TimerWidget = {
             SettingsWidget.enterSettings();
         });
 
+        t.resetButton.on('click', function() {
+            TimerWidget.reset();
+        });
+
         t.pausePlay.click(function() {
           $(this).toggleClass("paused");
         });
@@ -99,17 +117,17 @@ TimerWidget = {
             h.currentTask = h.taskInput.val();
             h.taskInput.addClass('hide');
             $(this).addClass('hide');
-            t.progressNotification.removeClass('hide');
+            t.progressNotification.addClass('pomodoro-progress');
+            t.progressNotification.removeClass('hide short-break-progress long-break-setting');
 
-            if (h.currentTask !== '') {
-                h.taskWritten.text(h.currentTask);
-            } else {
-                h.taskWritten.text('Working Hard!');
+            if (h.currentTask === '') {
+                h.currentTask = 'Working Hard';
             }
+
+            h.taskWritten.text(h.currentTask);
             
             h.taskWritten.removeClass('hide');
             TimerWidget.cancelTimer();
-            t.timerSection.removeClass('hide');
             t.timerType = 'pomo';
             t.timerCountdownStart = s.timerSetting;
             t.degrees = 0;
@@ -117,6 +135,13 @@ TimerWidget = {
         });
 
         t.startShortBreakButton.on('click', function() {
+            h.currentTask = "Break Time"; // duplicate code
+            h.taskInput.addClass('hide');
+            $(this).addClass('hide');
+            t.progressNotification.addClass('short-break-progress');
+            t.progressNotification.removeClass('hide pomodoro-progress long-break-setting');
+
+            h.taskWritten.removeClass('hide');
             TimerWidget.cancelTimer();
             t.timerType = 'short-break';
             t.timerCountdownStart = s.shortBreakSetting;
@@ -125,17 +150,54 @@ TimerWidget = {
         });
 
         t.startLongBreakButton.on('click', function() {
+            h.currentTask = "Long Break";
+            h.taskInput.addClass('hide');
+            $(this).addClass('hide');
+            t.progressNotification.addClass('long-break-progress');
+            t.progressNotification.removeClass('hide short-break-progress pomodoro-progress');
+
+            h.taskWritten.removeClass('hide');
             TimerWidget.cancelTimer();
-            t.timerType = 'long-break';t.timerCountdownStart = s.longBreakSetting;
+            t.timerType = 'long-break';
+            t.timerCountdownStart = s.longBreakSetting;
             t.degrees = 0;
             TimerWidget.startTimer(s.longBreakSetting, t.timerType); 
         });
+    },
+
+    reset: function() {
+        TimerWidget.cancelTimer();
+        TimerWidget.cancelPauseTimer();
+        switch(t.timerType) {
+            case 'pomo':
+                TimerWidget.showPomodoro();
+                break;
+            case 'short-break':
+                TimerWidget.showShortBreak();
+                break;
+            case 'long-break':
+                TimerWidget.showLongBreak();
+                break;
+            default:
+                TimerWidget.showPomodoro();
+
+        }
     },
 
     setPlayPause: function() {
         t.playpause = !t.playpause;
         if (t.playpause) {
             TimerWidget.cancelPauseTimer();
+            HistoryWidget.storeLocally({
+                description: 'Interrupted!',
+                timeTaken: HistoryWidget.displayTimeTaken(t.count),
+                timeStarted: t.pauseStartMoment.format('h:mm a'),
+                timeEnded: t.pauseCurrentMoment.format('h:mm a'),
+                id: t.pauseCurrentMoment.format('x'),
+                date: t.timerEnd.format('MMMM Do YYYY'),
+                type: 'interrupted',
+                timeLabel: h.timeLabel
+            });
             TimerWidget.startTimer(t.timerCountdown, t.timerType);
         } else {
             TimerWidget.pauseTimer();
@@ -148,33 +210,88 @@ TimerWidget = {
         HistoryWidget.storeLocally({
             description: h.currentTask,
             timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
-            timeStarted: t.timerStart.format('h:mm:ss a'),
-            timeEnded: t.timerEnd.format('h:mm:ss a'),
+            timeStarted: t.timerStart.format('h:mm a'),
+            timeEnded: t.timerEnd.format('h:mm a'),
             id: t.timerEnd.format('x'),
-            date: t.timerEnd.format('MMMM Do YYYY')
+            date: t.timerEnd.format('MMMM Do YYYY'),
+            type: t.timerType,
+            timeLabel: h.timeLabel
         });
-        h.historyData.removeClass('hide');
         t.pauseText.removeClass('hide');
         t.pauseCounter = 0;
         t.pauseStartMoment = moment();
         var minute = Math.floor(t.pauseCounter / 60);
         var second = t.pauseCounter % 60;
-        $('#pause-minute-display').text(TimerWidget.formatTime(minute));
-        $('#pause-second-display').text(TimerWidget.formatTime(second));
+        t.pauseMinuteDisplay.text(TimerWidget.formatTime(minute));
+        t.pauseSecondDisplay.text(TimerWidget.formatTime(second));
         t.runningPauseTimer = setInterval(TimerWidget.intervalTimerUp, 1000);
     },
 
-    cancelTimer: function(type) {
+    cancelTimer: function() {
         t.timerEnd = moment();
         clearInterval(t.runningTimer);
         t.timerCountdown = 0;
+    },
+
+    pomoFlow: function(type) {
         if (type === 'pomo') {
             t.pomoCount += 1;
-            h.taskArea.removeClass('hide');
+            if (t.pomoCount % 4 === 0) {
+                TimerWidget.showLongBreak();
+            } else {
+                TimerWidget.showShortBreak();
+            }
         }
-        t.statement.removeClass('hide');
-        t.statement.text(TimerWidget.chooseStatement(type));
 
+        if (type !== 'pomo') {
+            TimerWidget.showPomodoro();
+        }
+
+        
+    },
+
+    showPomodoro: function() {
+        TimerWidget.displayTimerFoyer(s.timerSetting);
+        t.startTime.removeClass('hide');
+        h.taskInput.removeClass('hide');
+        t.startPomodoroButton.removeClass('hide');
+        t.progressNotification.addClass('hide');
+        h.taskWritten.addClass('hide');
+        t.backgroundImage.removeClass('background__short-break background__long-break fade-out2');
+        t.backgroundImage.addClass('background__pomodoro fade-in2');
+        t.timer.removeClass('fade-in2');
+        t.timer.addClass('fade-out2');
+        t.timerType = "pomo";
+    },
+
+    showLongBreak: function() {
+        TimerWidget.displayTimerFoyer(s.longBreakSetting);
+        t.startTime.removeClass('hide');
+        t.startLongBreakButton.removeClass('hide');
+        t.progressNotification.addClass('hide');
+        h.taskWritten.text("Nice work! Time to take a longer break.");
+        t.backgroundImage.removeClass('background__short-break background__pomodoro fade-out2');
+        t.backgroundImage.addClass('background__long-break fade-in2');
+        t.timer.removeClass('fade-in2');
+        t.timer.addClass('fade-out2');
+        t.timerType = "long-break";
+
+        TimerWidget.cancelPauseTimer();
+    },
+
+    showShortBreak: function() {
+        TimerWidget.displayTimerFoyer(s.shortBreakSetting);
+        t.startTime.removeClass('hide');
+        t.startShortBreakButton.removeClass('hide');
+        t.progressNotification.addClass('hide');
+        h.taskWritten.text("Take a short break. You've earned it!");
+        t.backgroundImage.removeClass('background__long-break background__pomodoro fade-out2');
+        t.backgroundImage.addClass('background__short-break fade-in2');
+        t.timer.removeClass('fade-in2');
+        t.timer.addClass('fade-out2');
+        t.timerType = "short-break";
+
+        TimerWidget.cancelPauseTimer();
     },
 
     startTimer: function(setting, type) {
@@ -184,8 +301,10 @@ TimerWidget = {
         t.degreeCalculation = 360 / t.timerCountdownStart;
         t.statement.addClass('hide');
         TimerWidget.displayTimer(t.timerCountdown);
+        TimerWidget.hideTimerFoyer();
         t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, type);
         h.historyEmptyState.addClass('hide');
+        h.historyData.removeClass('hide');
     },
 
     chooseStatement: function(type) {
@@ -205,68 +324,80 @@ TimerWidget = {
         t.count = t.pauseCurrentMoment.diff(t.pauseStartMoment, 'second');
         var minute = Math.floor(t.count / 60);
         var second = t.count % 60;
-        $('#pause-minute-display').text(TimerWidget.formatTime(minute));
-        $('#pause-second-display').text(TimerWidget.formatTime(second));
+        t.pauseMinuteDisplay.text(TimerWidget.formatTime(minute));
+        t.pauseSecondDisplay.text(TimerWidget.formatTime(second));
 
     },
 
     displayTimerFoyer: function(countdown) {
+        t.pauseArea.addClass('hide');
         var minute = Math.floor(countdown / 60);
         var second = countdown % 60;
-        $('#start-time').text(TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second));
+        t.startTime.text(TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second));
+        
     },
 
     cancelPauseTimer: function() {
+        t.pausePlay.removeClass("paused");
+        t.playpause = true;
         clearInterval(t.runningPauseTimer);
         t.degrees = t.new_degrees;
-        HistoryWidget.storeLocally({
-          description: 'Interrupted!',
-          timeTaken: HistoryWidget.displayTimeTaken(t.count),
-          timeStarted: t.pauseStartMoment.format('h:mm:ss a'),
-          timeEnded: t.pauseCurrentMoment.format('h:mm:ss a'),
-          id: t.pauseCurrentMoment.format('x'),
-          date: t.timerEnd.format('MMMM Do YYYY')
-        });
         t.pauseText.addClass('hide');
     },
 
     intervalTimer: function(type) {
-        if (t.timerCountdown > 1) {
+
+        if (t.timerCountdown <= 1) {
+            TimerWidget.cancelTimer();
+        }
+
+        if (t.timerCountdown > 0) {
             t.timerCountdown = t.timerBegin - Math.round((moment() - t.timerStart) / 1000);
-        } else {
-            TimerWidget.cancelTimer(type);
-            h.historyData.removeClass('hide');
+        } else if (t.timerCountdown <= 0) {
+            TimerWidget.pomoFlow(type);
             if (type === 'short-break' || type === 'long-break') {
                 HistoryWidget.storeLocally({
                     description: 'Break Time',
                     timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
-                    timeStarted: t.timerStart.format('h:mm:ss a'),
-                    timeEnded: t.timerEnd.format('h:mm:ss a'),
+                    timeStarted: t.timerStart.format('h:mm a'),
+                    timeEnded: t.timerEnd.format('h:mm a'),
                     id: t.timerEnd.format('x'),
-                    date: t.timerEnd.format('MMMM Do YYYY')
+                    date: t.timerEnd.format('MMMM Do YYYY'),
+                    type: type,
+                    timeLabel: h.timeLabel
                 });
             } else {
                 HistoryWidget.storeLocally({
                   description: h.currentTask,
                   timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
-                  timeStarted: t.timerStart.format('h:mm:ss a'),
-                  timeEnded: t.timerEnd.format('h:mm:ss a'),
+                  timeStarted: t.timerStart.format('h:mm a'),
+                  timeEnded: t.timerEnd.format('h:mm a'),
                   id: t.timerEnd.format('x'),
-                  date: t.timerEnd.format('MMMM Do YYYY')
+                  date: t.timerEnd.format('MMMM Do YYYY'),
+                  type: type,
+                  timeLabel: h.timeLabel
                 });
             }
+            
         }
+
+        
+
         TimerWidget.displayTimer(t.timerCountdown);
+
+        
+    },
+
+    hideTimerFoyer: function() {
+        t.timer.removeClass('fade-out2 fade-out').addClass('fade-in2');
+        t.backgroundImage.removeClass('fade-in2').addClass('fade-out2');
     },
 
     displayTimer: function(countdown) {
+        t.pauseArea.removeClass('hide');
         var minute = Math.floor(countdown / 60);
         var second = countdown % 60;
-        $('#time').removeClass('hide');
-        $('#background-image').removeClass('tomato');
-        $('#minute-display').text(TimerWidget.formatTime(minute));
-        $('#second-display').text(TimerWidget.formatTime(second));
-        $('#start-time').addClass('hide');
+
         t.text = '' + TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second);
         
         TimerWidget.draw();
@@ -315,7 +446,7 @@ TimerWidget = {
         var text_width = t.ctx.measureText(t.text).width;
         //adding manual value to position y since the height of the text cannot
         //be measured easily. There are hacks but we will keep it manual for now.
-        t.ctx.fillText(t.text, t.W/2 - text_width/2, t.H/2);
+        t.ctx.fillText(t.text, t.W/2 - text_width/2, t.H/2 + 15);
     },
 
     draw: function() {
@@ -358,7 +489,8 @@ SettingsWidget = {
         settingsSection: $('#settings'),
         timerSetting: 1500,
         shortBreakSetting: 300,
-        longBreakSetting: 1200
+        longBreakSetting: 1200,
+        localSettings: JSON.parse(localStorage.getItem("settingsData")) || {}
     },
 
     init: function() {
@@ -378,36 +510,28 @@ SettingsWidget = {
     },
 
     saveSettings: function() {
-        TimerWidget.cancelTimer();
         s.timerSetting = s.timeInput.val() * 60;
         s.shortBreakSetting = s.shortBreakInput.val() * 60;
         s.longBreakSetting = s.longBreakInput.val() * 60;
+        s.localSettings = {
+            "timerSetting": s.timeInput.val() * 60,
+            "shortBreakSetting": s.shortBreakInput.val() * 60,
+            "longbreakSetting": s.longBreakInput.val() * 60
+        };
+
+        localStorage.setItem("settingsData", JSON.stringify(s.localSettings));
+        TimerWidget.reset();
         SettingsWidget.exitSettings();
-
-
-        TimerWidget.displayTimerFoyer(s.timerSetting);
-        $('#start-time').removeClass('hide');
-        h.taskInput.removeClass('hide');
-        t.startPomodoroButton.removeClass('hide');
-        t.progressNotification.addClass('hide');
-        h.taskWritten.addClass('hide');
-        $('#background-image').addClass('tomato');
-        $('#time').addClass('hide');
-
-        
-        t.pausePlay.removeClass("paused");
-        t.playpause = true;
-        TimerWidget.cancelPauseTimer();
 
     },
 
     enterSettings: function() {
         s.settingsSection.removeClass('hide');
+        $('.settings-modal').focus();
     },
 
     exitSettings: function() {
         s.settingsSection.addClass('hide');
-        t.timerSection.removeClass('hide');
     }
 };
 
@@ -433,7 +557,10 @@ HistoryWidget = {
         exportButton: $('#export-table'),
         row: JSON.parse(localStorage.getItem("rowData")) || [],
         currentTask: '',
-        dateArray: []
+        dateArray: [],
+        timeLabel: 'min',
+        taskSaveShowing: false,
+        saveCanceled: false
     },
 
     init: function() {
@@ -464,25 +591,11 @@ HistoryWidget = {
         });
 
         h.historyDataTable.on('click', '.edit-task', function() {
-            HistoryWidget.editTask(this.id);
+            HistoryWidget.editTask(this);
         });
 
         h.historyDataTable.on('focus', '.history__task-description', function() {
             HistoryWidget.showSave($(this).attr('id'));
-        });
-
-        h.cancelButton.on('mousedown', function() {
-            h.cancelButton.data('mousedown', true);
-        });
-
-        h.cancelButton.on('mouseup', function() {
-            h.cancelButton.data('mousedown', false);
-        });
-
-        h.historyDataTable.on('blur', '.history__task-description', function() {
-            if (h.cancelButton.data('mousedown') !== true) {
-                HistoryWidget.saveTask(h.currentTaskEdit);
-            }
         });
 
         h.historyDataTable.on('keydown', '.history__task-description', function(e) {
@@ -494,16 +607,12 @@ HistoryWidget = {
             return e.which !== 13;
         });
 
-        h.saveButton.on('click', function() {
+        h.historyDataTable.on('click', '#save-button', function() {
             HistoryWidget.saveTask(h.currentTaskEdit);
         });
 
-        h.cancelButton.on('click', function() {
+        h.historyDataTable.on('click', '#cancel-button', function() {
             HistoryWidget.cancelSave();
-        });
-
-        h.historyDataTable.on('click', '.edit-task', function() {
-            HistoryWidget.editTask(this);
         });
 
         h.exportButton.on('click', function() {
@@ -512,9 +621,15 @@ HistoryWidget = {
     },
 
     displayTimeTaken: function(timeTaken) {
-        var minute = Math.floor(timeTaken / 60);
-        var second = timeTaken % 60;
-        return TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second);
+        // If there are minutes, display in minutes
+        // If there are only seconds, display in seconds
+        var minute = Math.round(timeTaken / 60);
+
+        if (minute > 0) {
+            return minute;
+        } else {
+            return '<1';
+        }
     },
 
     editTask: function(id) {
@@ -523,33 +638,71 @@ HistoryWidget = {
     },
 
     cancelSave: function() {
-        $('#' + h.currentTaskEdit).text(h.oldTaskInfo);
+        if (h.oldTaskInfo !== '') {
+          $('#' + h.currentTaskEdit).text(h.oldTaskInfo);
+          h.oldTaskInfo = '';
+        }
+        
         HistoryWidget.hideSave();
     },
 
     showSave: function(id) {
+        HistoryWidget.saveTask(h.currentTaskEdit);
+
         h.oldTaskInfo = $('#' + id).text();
         h.currentTaskEdit = id;
-        h.taskSaveArea.removeClass('hide');
+        $('#' + h.currentTaskEdit).attr('tabindex', "1").addClass('focus-border');
+        var taskSaveAreaId = id.substring(10);
+
+        if (!h.taskSaveShowing) {
+            var currentTaskSaveArea = $("<div>", {
+                "id": "task-save-area",
+                "class": "task-save-area"
+            }).insertAfter($('#' + taskSaveAreaId));
+
+            $("<button>", {
+                "id": "save-button",
+                "class": "save-button button-small button__accent3 waves-effect waves-light",
+                "text": "Save"
+            }).appendTo(currentTaskSaveArea);
+
+            $("<button>", {
+                "id": "cancel-button",
+                "class": "cancel-button button-ghost waves-effect waves-light",
+                "text": "Cancel"
+            }).appendTo(currentTaskSaveArea);
+
+            h.taskSaveShowing = true;
+        }
+            
     },
 
     saveTask: function(id) {
-        // stores new content in localstorage
-        var item = $('#' + id).parent().parent().attr('id');
-        h.data[item].description = $('#' + h.currentTaskEdit).text();
-        localStorage.setItem("taskData", JSON.stringify(h.data));
-        
-        for (var i=0; i< h.row.length; i++) {
-            if (h.row[i].id === item) {
-                h.row[i].task = $('#' + h.currentTaskEdit).text();
-                localStorage.setItem("rowData", JSON.stringify(h.row));
+        if (id !== '') {
+            // stores new content in localstorage
+            var item = $('#' + id).parent().parent().attr('id');
+            h.data[item].description = $('#' + h.currentTaskEdit).text();
+            localStorage.setItem("taskData", JSON.stringify(h.data));
+            
+            for (var i=0; i< h.row.length; i++) {
+                if (h.row[i].id === item) {
+                    h.row[i].task = $('#' + h.currentTaskEdit).text();
+                    localStorage.setItem("rowData", JSON.stringify(h.row));
+                }
             }
+
+            h.oldTaskInfo = '';
         }
+
+        
         HistoryWidget.hideSave();
     },
 
     hideSave: function() {
-        h.taskSaveArea.addClass('hide');
+        $('#' + h.currentTaskEdit).prop('tabindex', null).removeClass('focus-border');
+        h.taskSaveArea = $('#task-save-area');
+        h.taskSaveArea.remove();
+        h.taskSaveShowing = false;
     },
 
     clearHistory: function() {
@@ -563,6 +716,8 @@ HistoryWidget = {
         $('#history-data').addClass('hide');
         $('#history-empty').removeClass('hide');
     },
+
+
 
     storeLocally: function(params) {
         // Saving element in local storage
@@ -596,14 +751,16 @@ HistoryWidget = {
     addTask: function(params) {
         var defaults = {
           // CSS selectors and attributes that would be used by the JavaScript functions
-          taskItem: "history__task-item",
+          taskItem: "history__task-item task-icon",
           taskDescription: "history__task-description",
-          taskTime: "history__task-time",
-          taskStart: "history__task-start",
-          taskEnd: "history__task-end",
+          taskTime: "history__task-duration task-time__arrow",
+          taskStart: "history__task-time",
           id: params.id,
-          date: params.date
+          date: params.date,
+          type: params.type,
+          timeLabel: params.timeLabel
         };
+
 
         h.historyEmptyState.addClass('hide');
 
@@ -624,52 +781,55 @@ HistoryWidget = {
             }).appendTo($('.' + dateString));
 
             $("<div>", {
-                "class": defaults.dateString + '-body'
+                "class": '' + dateString + '-body'
             }).appendTo($('.' + dateString));
 
         }
 
-        var wrapper = $("<div>", {
-            "class" : defaults.taskItem,
+        var historyTaskItem = $("<div>", {
+            "class" : defaults.taskItem + ' fade-in2 ' + defaults.type + '-icon',
             "id": defaults.id
-        }).prependTo($('.' + defaults.dateString + '-body'));
+        }).prependTo($('.' + dateString + '-body'));
 
-        $("<div>", {
-            "class" : defaults.taskTime,
+        var historyTaskDuration = $("<div>", {
+            "class" : defaults.taskTime + ' arrow-' + defaults.type,
             "text": params.timeTaken,
             "data-label": "Duration"
-          }).appendTo(wrapper);
+          }).appendTo(historyTaskItem);
 
-        $("<div>", {
+        $("<abbr>", {
+            'class': 'history__task-duration-label',
+            'text': defaults.timeLabel
+        }).appendTo(historyTaskDuration);
+
+        var descriptionContainer = $("<div>", {
             "class": 'description-container',
             "id": defaults.id + '-container',
             "data-label": "Task"
-        }).appendTo(wrapper);
+        }).appendTo(historyTaskItem);
 
         $("<div>", {
             "class" : defaults.taskDescription,
             "text": params.description,
-            "id": 'task-edit-' + params.id,
+            "id": 'task-edit-' + defaults.id,
             "contenteditable": 'true'
-        }).appendTo($("#" + defaults.id + "-container"));
+        }).appendTo(descriptionContainer);
 
-        $("<button>", {
-            "class" : 'edit-task',
-            "id" : 'edit-' + params.id,
-            "text" : 'Edit'
-        }).insertAfter($('#task-edit-' + params.id));
+        var historyTaskTime = $("<div>", {
+            "class": "history__task-time"
+        }).appendTo(descriptionContainer);
 
         $("<div>", {
             "class" : defaults.taskStart,
-            "text": params.timeStarted,
-            "data-label": "Start"
-          }).appendTo(wrapper);
+            "text": params.timeStarted + ' - ' + params.timeEnded,
+            "data-label": "Times"
+          }).appendTo(historyTaskTime);
 
-        $("<div>", {
-            "class" : defaults.taskEnd,
-            "text": params.timeEnded,
-            "data-label": "Stop"
-        }).appendTo(wrapper);
+        $("<button>", {
+            "class" : 'edit-task button-ghost waves-effect waves-light',
+            "id" : 'edit-' + defaults.id,
+            "text" : 'Edit'
+        }).appendTo(historyTaskItem);
 
 
 
@@ -680,11 +840,8 @@ HistoryWidget = {
 // 
 
 $(document).ready(function() {
-
+    "use strict";
     SettingsWidget.init();
     TimerWidget.init();
     HistoryWidget.init();
-
-    
-
 });

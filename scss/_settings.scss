@@ -11,16 +11,54 @@
 .settings-modal {
 	background: $background-gray;
 	margin:auto;
-	width: 370px;
-	top:25%;
+	max-width: 480px;
+	height:100%;
 	position:relative;
 	padding: 2rem;
 	border-radius:5px;
 	box-shadow: 0 2px 20px 0 #000;
 }
 
+@media (min-width: 481px) {
+	.settings-modal {
+		top:15%;
+		height:auto
+	}
+}
+
 .settings-modal:focus {
 	outline:none;
+}
+
+.settings-group {
+	margin-bottom: 3rem;
+}
+
+.toast.hide {
+	display:none;
+}
+
+.toast {
+	z-index: 10;
+    position: absolute;
+    background: rgb(255, 223, 227);
+    padding: 2rem;
+    margin: auto;
+    max-width: 300px;
+    left: 0;
+    right: 0;
+    color: black;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,1),0 2px 10px 0 rgba(0,0,0,1);
+    border-radius: 2px;
+}
+
+.close-toast {
+	position: absolute;
+    right: 0;
+    top: 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 0;
+    border: none;
 }
 
 .settings-input {
@@ -49,3 +87,94 @@
 	padding-bottom: 5px;
 }
 
+// Notifications
+
+.cmn-toggle {
+  position: absolute;
+  margin-left: -9999px;
+  visibility: hidden;
+}
+.cmn-toggle + label {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+input.cmn-toggle-round-flat + label {
+  padding: 2px;
+  width: 90px;
+  height: 45px;
+  background-color: #dddddd;
+  -webkit-border-radius: 45px;
+  -moz-border-radius: 45px;
+  -ms-border-radius: 45px;
+  -o-border-radius: 45px;
+  border-radius: 45px;
+  -webkit-transition: background 0.4s;
+  -moz-transition: background 0.4s;
+  -o-transition: background 0.4s;
+  transition: background 0.4s;
+}
+input.cmn-toggle-round-flat + label:before, input.cmn-toggle-round-flat + label:after {
+  display: block;
+  position: absolute;
+  content: "";
+}
+input.cmn-toggle-round-flat + label:before {
+  top: 2px;
+  left: 2px;
+  bottom: 2px;
+  right: 2px;
+  background-color: #fff;
+  -webkit-border-radius: 45px;
+  -moz-border-radius: 45px;
+  -ms-border-radius: 45px;
+  -o-border-radius: 45px;
+  border-radius: 45px;
+  -webkit-transition: background 0.4s;
+  -moz-transition: background 0.4s;
+  -o-transition: background 0.4s;
+  transition: background 0.4s;
+}
+input.cmn-toggle-round-flat + label:after {
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  width: 37px;
+  background-color: #dddddd;
+  -webkit-border-radius: 52px;
+  -moz-border-radius: 52px;
+  -ms-border-radius: 52px;
+  -o-border-radius: 52px;
+  border-radius: 52px;
+  -webkit-transition: margin 0.4s, background 0.4s;
+  -moz-transition: margin 0.4s, background 0.4s;
+  -o-transition: margin 0.4s, background 0.4s;
+  transition: margin 0.4s, background 0.4s;
+}
+input.cmn-toggle-round-flat:checked + label {
+  background-color: #9CCC65;
+}
+input.cmn-toggle-round-flat:checked + label:after {
+  margin-left: 45px;
+  background-color: #9CCC65;
+}
+
+.switch-container {
+	margin-bottom: 1rem;
+}
+
+.switch-label {
+	display:table-cell;
+	vertical-align:middle;
+	text-align:left;
+	width:100%;
+}
+
+.switch {
+	display:table-cell;
+	vertical-align:middle;
+	text-align:right;
+}

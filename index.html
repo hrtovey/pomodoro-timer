@@ -4,9 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Pomodoro Clock</title>
-	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/style.css">
 
 	
@@ -93,7 +91,7 @@
 				<div class="task-container">
 
 					<div class="download">
-						Download as: <button id="export-table" class="button-ghost button-download waves-effect waves-light text--accent1">Print</button><button id="export-csv" class="button-ghost button-download text--accent1 waves-effect waves-light">CSV</button>
+						Download as: <button id="export-table" class="button-ghost button-download waves-effect waves-light text--accent1">Print</button><a id="export-csv" class="button-ghost button-download text--accent1 waves-effect waves-light export-csv">CSV</a>
 					</div>			
 
 					
@@ -111,27 +109,51 @@
 
 	<div id="settings" class="overlay hide">
 		<div class="settings-modal" tabindex='-1'>
+			<div id="toast-unsupported" class="toast hide"><button id="close-toast-unsupported" class="close-toast">X</button><p id="toast-text">Sorry, but your browser doesn't support web notifications.</p></div>
+			<div id="toast-notifications" class="toast hide"><button id="close-toast-notifications" class="close-toast">X</button><p id="toast-text">Desktop notifications have been disabled.</p></div>
+			<div id="toast-sound" class="toast hide"><button id="close-toast-sound" class="close-toast">X</button><p id="toast-text">Sound has been disabled.</p></div>
+			<div class="settings-group">
+				<h2 class="instructions">Timer Settings</h2>			
 
-			<h2 class="instructions">Timer Settings</h2>
+				<div class="form-input">
+					<label for="time-input" class="settings-label">Length of Pomodoro</label><!--
+					--><div class="input-box">
+						<input id="time-input" class="settings-input" value="25"> <span class="input-label">minutes</span>
+					</div>
+				</div>
 
-			<div class="form-input">
-				<label for="time-input" class="settings-label">Length of Pomodoro</label><!--
-				--><div class="input-box">
-					<input id="time-input" class="settings-input" value=""> <span class="input-label">minutes</span>
+				<div class="form-input">
+					<label class="settings-label" for="short-break">Length of Short Break</label><!--
+					--><div class="input-box">
+						<input id="short-break" class="settings-input" value="5"> <span class="input-label">minutes</span>
+					</div>
+				</div>
+
+				<div class="form-input">
+					<label for="long-break" class="settings-label">Length of Long Break</label><!--
+					--><div class="input-box">
+						<input id="long-break" class="settings-input" value="20"> <span class="input-label">minutes</span>
+					</div>
 				</div>
 			</div>
 
-			<div class="form-input">
-				<label class="settings-label" for="short-break">Length of Short Break</label><!--
-				--><div class="input-box">
-					<input id="short-break" class="settings-input" value=""> <span class="input-label">minutes</span>
-				</div>
-			</div>
+			<div class="settings-group">
+				<h2 class="instructions">Notification Settings</h2>
 
-			<div class="form-input">
-				<label for="long-break" class="settings-label">Length of Long Break</label><!--
-				--><div class="input-box">
-					<input id="long-break" class="settings-input" value=""> <span class="input-label">minutes</span>
+				<div class="switch-container">
+					<div class="switch-label">Enable Sound</div>
+					<div class="switch">
+					  <input id="setSound" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+					  <label for="setSound"></label>
+					</div>
+				</div>
+
+				<div class="switch-container">
+					<div class="switch-label">Enable Notifications</div>
+					<div class="switch">
+					  <input id="setNotifications" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+					  <label for="setNotifications"></label>
+					</div>
 				</div>
 			</div>
 
@@ -146,18 +168,27 @@
 		</div>
 	</div>
 
+	<div id="about-section" class="overlay hide">
+		<div class="settings-modal" tabindex='-1'>
+		<button id="close-about" class="close-toast close-about">X</button>
+			<h2 class="instructions">About Pomodoro<span class="text--accent2">&plus;</span></h2>
+			<p class="about-text">Pomodoro<span class="text--accent2">&plus;</span> was created for a <a href="https://www.freecodecamp.com">FreeCodeCamp</a> exercise. While the exercise consisted of building a simple Pomodoro timer, I decided to add some features that I was interested in using. Specifically, I added the ability to track time and export timesheets. I also used the Notifications API in order to add desktop notifications for those times when sound-based notifications aren't appropriate.</p>
+			<p class="about-text">You can see more of my work at <a href="http://htovey.com">htovey.com</a>.</p>
+
+			<h2 class="instructions">Attributions</h2>
+			<p class="about-text">Thank you to the <a href="https://thenounproject.com/">Noun Project</a> and the following artists for the icons used throughout this project.</p>
+
+			<ul class="attributions-list about-text">
+				<li class="attribution-item"><a href="https://thenounproject.com/term/tomato/1375/">Tomato</a> by Okan Benn</li>
+				<li class="attribution-item"><a href="https://thenounproject.com/term/coffee-cup/108434/">Coffee Cup</a> by Rohith M S</li>
+				<li class="attribution-item"><a href="https://thenounproject.com/term/reset/299645/">Reset</a> by Roberto Chiaveri</li>
+			</ul>
+		</div>
+	</div>
+
 </main>
 
 
-
-
-
-
-	<script src="js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="js/materialize.js"></script>
-	<script src="js/moment.min.js"></script>
-	<script type="text/javascript" src="js/jspdf.debug.js"></script>
-	<script src="js/jspdf.plugin.autotable.js"></script>
-	<script src="js/timer.js"></script>
+	<script src="js/min/pomodoro-min.js"></script>
 </body>
 </html>

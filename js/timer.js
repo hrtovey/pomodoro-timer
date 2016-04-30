@@ -494,7 +494,7 @@ SettingsWidget = {
         s = this.settings;
         this.bindUIActions();
 
-        if (s.localSettings !== {}) {
+        if (!jQuery.isEmptyObject(s.localSettings)) {
             s.timerSetting = s.localSettings.timerSetting * 60;
             s.shortBreakSetting = s.localSettings.shortBreakSetting * 60;
             s.longBreakSetting = s.localSettings.longBreakSetting * 60;

@@ -336,14 +336,14 @@ TimerWidget = {
             TimerWidget.pomoFlow(type);
 
             if (s.soundOn === true) {
-                var wav = '../sound/ringing-bells.mp3';
+                var wav = 'sound/ringing-bells.mp3';
                 var audio = new Audio(wav);
                 audio.play();
             }
 
             if (type === 'short-break' || type === 'long-break') {
                 if (s.notifyOn === true) {
-                    SettingsWidget.notify('../img/tomato-notification.png', 'Break Over!', 'Back to work.');
+                    SettingsWidget.notify('img/tomato-notification.png', 'Break Over!', 'Back to work.');
                 }
                 HistoryWidget.storeLocally({
                     description: 'Break Time',
@@ -357,7 +357,7 @@ TimerWidget = {
                 });
             } else {
                 if (s.notifyOn === true) {
-                    SettingsWidget.notify('../img/coffee-notification.png', 'Nice work!', 'You deserve a break.');
+                    SettingsWidget.notify('img/coffee-notification.png', 'Nice work!', 'You deserve a break.');
                 }
                 HistoryWidget.storeLocally({
                   description: h.currentTask,

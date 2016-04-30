@@ -5,14 +5,12 @@
 // Enable Desktop Alerts
 // Sound and Volume Control on Settings
 
-
 // Issues:
 // - Fix Printed text (need more accurate duration data)
 
 
 // Final Pieces:
 // - Tidy up your JS and CSS - any duplicate code should go into functions...see how small you can make the JS
-// Consider tidying up CSS to conform to Trello CSS Guide
 // Minimize, gzip and all that. Make this TINY and make it load quickly
 // Back up google fonts so they don't load forever?
 
@@ -718,7 +716,8 @@ HistoryWidget = {
     clearHistory: function() {
 
         
-        localStorage.clear();
+        localStorage.removeItem("taskData");
+        localStorage.removeItem("rowData");
         h.data = {};
         h.row = [];
         h.dateArray = [];
@@ -770,7 +769,6 @@ HistoryWidget = {
           type: params.type,
           timeLabel: params.timeLabel
         };
-
 
         h.historyEmptyState.addClass('hide');
 

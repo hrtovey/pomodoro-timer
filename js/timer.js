@@ -2,7 +2,6 @@
 // Maybe export as CSV
 // Responsivize it
 // Add an About page
-// Settings should be stored in local storage
 // Enable Desktop Alerts
 // Sound and Volume Control on Settings
 
@@ -82,7 +81,7 @@ TimerWidget = {
     init: function() {
         t = this.settings;
         this.bindUIActions();
-        TimerWidget.displayTimerFoyer(t.timerCountdown);
+        TimerWidget.displayTimerFoyer(s.timerSetting);
         // Animate Timer
 
         t.canvas = $("#timer-animation")[0];
@@ -497,6 +496,17 @@ SettingsWidget = {
         s = this.settings;
         this.bindUIActions();
 
+        if (s.localSettings !== {}) {
+            s.timerSetting = s.localSettings.timerSetting * 60;
+            s.shortBreakSetting = s.localSettings.shortBreakSetting * 60;
+            s.longBreakSetting = s.localSettings.longBreakSetting * 60;
+            s.timeInput.attr('value', s.localSettings.timerSetting);
+            s.shortBreakInput.attr('value', s.localSettings.shortBreakSetting);
+            s.longBreakInput.attr('value', s.localSettings.longBreakSetting);
+        }
+
+
+
     },
 
     bindUIActions: function() {
@@ -514,9 +524,9 @@ SettingsWidget = {
         s.shortBreakSetting = s.shortBreakInput.val() * 60;
         s.longBreakSetting = s.longBreakInput.val() * 60;
         s.localSettings = {
-            "timerSetting": s.timeInput.val() * 60,
-            "shortBreakSetting": s.shortBreakInput.val() * 60,
-            "longbreakSetting": s.longBreakInput.val() * 60
+            "timerSetting": s.timeInput.val(),
+            "shortBreakSetting": s.shortBreakInput.val(),
+            "longBreakSetting": s.longBreakInput.val()
         };
 
         localStorage.setItem("settingsData", JSON.stringify(s.localSettings));

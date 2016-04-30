@@ -390,9 +390,33 @@ html {
 *, *:before, *:after {
   box-sizing: inherit; }
 
-.logo {
-  text-decoration: none;
-  color: #ffffff; }
+html, body {
+  min-height: 100%; }
+
+body {
+  background: #18191B;
+  color: #fff;
+  font-family: "Lato", sans-serif;
+  position: relative; }
+
+input {
+  color: #18191B; }
+
+canvas {
+  display: inline-block; }
+
+input {
+  width: 200px; }
+
+.container, .container-main {
+  padding: 10px; }
+
+@media (min-width: 500px) {
+  .container, .container-main {
+    padding: 20px; } }
+.container-main {
+  max-width: 960px;
+  margin: auto; }
 
 .hide {
   display: none !important; }
@@ -407,22 +431,6 @@ html {
   position: absolute;
   top: auto;
   width: 1px; }
-
-html, body {
-  min-height: 100%; }
-
-body {
-  background: #18191B;
-  color: #fff;
-  font-family: "Lato", sans-serif;
-  position: relative; }
-
-.container, .container-main {
-  padding: 20px; }
-
-.container-main {
-  max-width: 960px;
-  margin: auto; }
 
 .background-gray {
   background: #34353A; }
@@ -439,14 +447,30 @@ body {
 h1 {
   margin: 0; }
 
-h1, .logo {
+.logo-link {
+  color: #FFFFFF;
+  text-decoration: none;
+  text-align: center;
+  display: block; }
+
+@media (min-width: 500px) {
+  .logo-link {
+    display: inline-block; } }
+.logo {
   display: inline-block;
-  vertical-align: middle; }
+  vertical-align: middle;
+  line-height: 48px; }
+
+.logo-image {
+  margin-right: 5px; }
 
 .navigation {
-  float: right;
-  line-height: 37px; }
+  text-align: center;
+  line-height: 38px; }
 
+@media (min-width: 500px) {
+  .navigation {
+    float: right; } }
 .nav-items {
   list-style-type: none;
   margin: 0;
@@ -457,14 +481,13 @@ h1, .logo {
   display: inline-block;
   padding-left: 20px; }
 
-input {
-  color: #18191B; }
-
-canvas {
-  display: inline-block; }
-
-input {
-  width: 200px; }
+.header-button {
+  background: none;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px; }
 
 .history-section {
   text-align: center; }
@@ -715,8 +738,12 @@ button {
   font-weight: 600;
   letter-spacing: .5px;
   transition: .2s ease-out;
-  cursor: pointer; }
+  cursor: pointer;
+  width: 100%; }
 
+@media (min-width: 500px) {
+  .button {
+    width: auto; } }
 .button__accent1 {
   background: #9CCC65; }
 
@@ -757,14 +784,6 @@ button {
 .width-50 {
   width: 50%;
   display: inline-block; }
-
-.header-button {
-  background: none;
-  border: none;
-  color: white;
-  text-transform: uppercase;
-  font-size: 14px;
-  letter-spacing: 1px; }
 
 .task-input-button {
   display: block; }
@@ -871,9 +890,6 @@ button {
   margin-bottom: 1rem;
   font-size: 24px; }
 
-.timer {
-  direction: rtl; }
-
 .time {
   text-align: right;
   position: relative;
@@ -882,20 +898,29 @@ button {
   display: inline-block; }
 
 .timer-area {
-  width: 30%;
-  display: inline-block;
-  vertical-align: middle;
-  height: 215px;
   position: relative;
-  direction: ltr;
-  text-align: right; }
+  height: 215px;
+  width: 215px;
+  margin: auto; }
 
-.task-area {
-  width: 70%;
-  display: inline-block;
-  vertical-align: middle;
-  direction: ltr; }
+@media (min-width: 780px) {
+  .timer {
+    direction: rtl; }
 
+  .timer-area {
+    width: 30%;
+    display: inline-block;
+    vertical-align: middle;
+    height: 215px;
+    position: relative;
+    direction: ltr;
+    text-align: right; }
+
+  .task-area {
+    width: 70%;
+    display: inline-block;
+    vertical-align: middle;
+    direction: ltr; } }
 .background-image {
   height: 215px;
   width: 215px;
@@ -964,6 +989,9 @@ button {
 
 .progress-notification.long-break-progress {
   color: #bef2df; }
+
+.buttons {
+  text-align: center; }
 
 .time {
   opacity: 0; }

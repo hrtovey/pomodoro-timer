@@ -1,3 +1,9 @@
+// Fix PDF
+// Fix CSS
+// Make Empty State gorgeous
+// Words to elipses if too big
+
+
 var t,
 TimerWidget,
 s,

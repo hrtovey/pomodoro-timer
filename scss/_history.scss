@@ -1,0 +1,250 @@
+// Empty State
+
+.history-section {
+  text-align:center;
+}
+
+.history-empty {
+  display:inline-block;
+  text-align:left;
+}
+
+.arrow-svg {
+  display:inline-block;
+  margin-right:20px;
+}
+
+.history-empty-container {
+  display:inline-block;
+  margin-left:20px;
+}
+
+.history-data {
+  text-align:left;
+  margin:1.5rem 0;
+}
+
+// Task History
+
+.task-history {
+  display:inline-block;
+  width:100%;
+  vertical-align:top;
+
+}
+
+// Task History Header
+
+.history-header {
+  background: $background-gray;
+}
+
+.history-header__title {
+  margin:0;
+  font-weight:300;
+  text-align: center;
+  display: inline-block;
+  margin-left: 1rem;
+  margin-top:9px;
+}
+
+.download {
+  font-size:14px;
+  color:$light-gray;
+  padding-top:0.6rem;
+}
+
+
+.export-csv {
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-decoration:none;
+}
+
+.date-header {
+  font-size:20px;
+  font-weight:300;
+  margin-left:2rem;
+}
+
+.button-ghost {
+  border:none;
+  background:none;
+}
+
+.clear-history {
+  float: right;
+  height: 48px;
+  padding-top:4px;
+}
+
+// Task Container
+
+
+@media (min-width: 480px) {
+   .task-container {
+      margin-left: 15px;
+      padding-left: 15px;
+      border-left: 2px solid $background-gray;
+  } 
+}
+
+
+// Task Item
+
+.history__task-item {
+    background: $background-gray;
+    margin:0 0 5px;
+    height:60px;
+    position:relative;
+}
+
+@media (min-width: 480px) {
+    .history__task-item {
+      margin:0 0 2rem 2rem;
+    }
+
+    .task-icon:before {
+        content: "";
+        min-height: 30px;
+        min-width: 30px;
+        background-image: url("../img/pomo-icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        display: inline-block;
+        position: absolute;
+        left: -63px;
+        top: 13px;
+        border: 2px solid $accent2;
+        border-radius: 50%;
+        background-color: #18191B;
+    }
+
+    .task-time__arrow:after {
+        content: "";
+        position: absolute;
+        border-style: solid;
+        display: block;
+        width: 0;
+        top: 16px;
+        left: -15px;
+        bottom: auto;
+        border-width: 12px 15px 12px 0px;
+        border-color: transparent $accent2;
+    }
+}
+
+
+
+.pomo-icon:before {
+    background-image: url('../img/pomo-icon.svg');
+    border:2px solid $accent2;
+    background-position: center 3px;
+}
+
+.short-break-icon:before {
+    background-image: url('../img/short-break-icon.svg');
+    border: 2px solid $accent1;
+}
+
+.long-break-icon:before {
+    background-image: url('../img/long-break-icon.svg');
+    border:2px solid $accent3;
+}
+
+.interrupted-icon:before {
+    background-image:url('../img/interrupted-icon.svg');
+    border:2px solid #FFFFFF;
+}
+
+.history__task-duration {
+    float: left;
+    background: $accent2;
+    height: 60px;
+    width: 60px;
+    text-align: center;
+    font-size:28px;
+    padding-top:5px;
+    font-weight:400;
+    color: $dark-gray;
+}
+
+.history__task-description {
+    font-weight:300;
+    padding:5px;
+    margin: -5px 0 0 -5px;
+}
+
+
+
+.arrow-pomo {
+    background: $accent2;
+}
+
+.arrow-pomo:after {
+    
+    border-color: transparent $accent2;
+}
+
+.arrow-long-break {
+    background: $accent3;
+}
+
+.arrow-long-break:after {
+    border-color: transparent $accent3;
+}
+
+.arrow-short-break {
+    background: $accent1;
+}
+
+.arrow-short-break:after {
+    border-color: transparent $accent1;
+}
+
+.arrow-interrupted {
+    background: $accent5;
+    color:#ffffff;
+    font-weight:300;
+}
+
+.arrow-interrupted:after {
+    border-color: transparent $accent5;
+}
+
+
+.history__task-duration-label {
+    display: block;
+    font-size: 13px;
+    margin-top: -3px;
+    text-transform:uppercase;
+}
+
+.description-container {
+    display:inline-block;
+    margin: .6rem 1rem 0;
+}
+
+.edit-task {
+    float:right;
+    color: white;
+    font-weight: 300;
+    height: 60px;
+    width: 48px;
+}
+
+.history__task-time {
+    font-size: 12px;
+    color: #979797;
+    margin-top: 2px;
+    font-weight:400;
+}
+
+.task-save-area {
+    margin: -1.5rem 0 2rem 5.8rem;
+}
+
+.focus-border {
+  border: 1px solid $light-gray;
+  margin: -6px 0 -1px -6px;
+}

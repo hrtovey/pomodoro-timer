@@ -1,0 +1,66 @@
+// Header
+
+h1 {
+    margin:0;
+}
+
+.logo-link {
+    color:#FFFFFF;
+    text-decoration:none;
+    text-align:center;
+    display:block;
+}
+
+@media (min-width: 500px) {
+    .logo-link {
+        display:inline-block;
+    }
+}
+
+.logo {
+    display:inline-block;
+    vertical-align:middle;
+    line-height:48px;
+}
+
+.logo-image {
+    margin-right:5px;
+}
+
+.navigation {
+    text-align:center;
+    line-height:38px;
+}
+
+@media (min-width: 500px) {
+   .navigation {
+        float:right;
+    } 
+}
+
+
+.nav-items {
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    display:inline-block;
+}
+
+.nav-item {
+    display:inline-block;
+}
+
+@media (min-width: 500px) {
+    .nav-item {
+        padding-left: 20px;
+    }
+}
+
+.header-button {
+  background: none;
+    border: none;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}

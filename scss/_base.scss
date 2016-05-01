@@ -1,0 +1,111 @@
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
+
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body {
+  min-height: 100%;
+}
+body {
+    background:#18191B;
+    color:#fff;
+    font-family: "Lato", sans-serif;
+    position:relative;
+}
+
+input {
+    color: #18191B;
+}
+
+
+canvas {
+    display: inline-block;
+}
+
+input {
+    width: 200px;
+}
+
+.container, .container-main {
+    padding: 10px;
+}
+
+@media (min-width:500px) {
+  .container, .container-main {
+    padding:20px;
+  }
+}
+
+.container-main {
+    max-width:960px;
+    margin:auto;
+}
+
+// Utility Classes
+
+.hide {
+    display:none !important;
+}
+
+.break {
+  display:block;
+}
+
+.hide-text {
+  height: 1px;
+  left: -900em;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+}
+
+// General Classes
+
+.background-gray {
+    background: #34353A;
+}
+
+.text--accent1 {
+    color: $accent1;
+}
+
+.text--accent2 {
+    color: $accent2;
+}
+
+.text--accent3 {
+    color: $accent3;
+}
+
+

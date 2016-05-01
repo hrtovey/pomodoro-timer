@@ -1,0 +1,185 @@
+button {
+    color:#34353A;
+    border-radius:5px;
+    padding:5px 10px;
+}
+
+.button {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    border: none;
+    border-radius: 2px;
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 2rem;
+    text-transform: uppercase;
+    vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: .5px;
+    transition: .2s ease-out;
+    cursor: pointer;
+    width:100%;
+}
+
+@media (min-width: 500px) {
+  .button {
+    width:auto;
+  }
+}
+.button__accent1 {
+  background: $accent4;
+}
+
+.button__accent2 {
+  background: $accent1;
+}
+
+.button__accent3 {
+    background: $accent3;
+}
+
+.button__secondary {
+  background: $light-gray;
+  border:1px solid darken($light-gray, 30%);
+}
+
+.button-small {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    border: none;
+    border-radius: 2px;
+    display: inline-block;
+    text-transform: uppercase;
+    vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: .5px;
+    transition: .2s ease-out;
+    cursor: pointer;
+
+}
+
+.save, .cancel {
+  width: 100%;
+}
+
+.save-container {
+  padding-right:10px;
+}
+
+.cancel-container {
+  padding-left:10px;
+}
+
+.width-50 {
+  width:50%;
+  display:inline-block;
+}
+
+.task-input-button {
+  display:block;
+}
+
+// Pause Play
+
+.play-button {
+    height: 48px;
+    width: 48px;
+    display: block;
+    margin: auto;
+    overflow: hidden;
+    position: absolute;
+    background: none;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 0;
+    top: 36px;
+    left: 51px;
+    -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+
+}
+
+.play-button:focus, .reset:focus {
+    outline:none;
+}
+
+.play-button.paused {
+    top: 36px;
+    left:57px;
+    padding:8px 12px;
+}
+.left {
+  height: 24px;
+  float: left;
+  background-color: #979797;
+  width: 4px;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+.triangle-1 {
+  -webkit-transform: translate(0, -100%);
+          transform: translate(0, -100%);
+}
+.triangle-2 {
+  -webkit-transform: translate(0, 100%);
+          transform: translate(0, 100%);
+}
+.triangle-1,
+.triangle-2 {
+  position: absolute;
+    top: 6px;
+    right: 12px;
+    background-color: transparent;
+    width: 0;
+    height: 0;
+    border-right: 36px solid #34353A;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+  -webkit-transition: -webkit-transform 0.25s ease;
+  transition: -webkit-transform 0.25s ease;
+  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, -webkit-transform 0.25s ease;
+}
+.right {
+  height: 24px;
+  float: right;
+  width: 4px;
+  background-color: #979797;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+}
+.paused .left {
+  width: 50%;
+}
+.paused .right {
+  width: 50%;
+}
+.paused .triangle-1 {
+  -webkit-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+}
+.paused .triangle-2 {
+  -webkit-transform: translate(0, 50%);
+          transform: translate(0, 50%);
+}
+
+.reset {
+    background: url("../img/reset.svg")no-repeat;
+    position: relative;
+    top: -93px;
+    height: 48px;
+    width: 48px;
+    border: none;
+    background-position: center;
+}
+
+.cancel-button {
+  text-transform:uppercase;
+  color: $light-gray;
+}

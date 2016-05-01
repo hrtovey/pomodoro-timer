@@ -1,0 +1,17 @@
+.close-about {
+	color: #FFFFFF;
+}
+
+.about-text {
+	font-weight: 300;
+	line-height:1.5;
+	letter-spacing: 0.2px;
+}
+
+.about-text a {
+	color: $accent1;
+}
+
+.about-text a:hover {
+	color: $accent2;
+}

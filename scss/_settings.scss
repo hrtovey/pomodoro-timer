@@ -1,22 +1,19 @@
 .overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
   width: 100%;
+  min-height: 100%;
   z-index: 10;
-  background-color: rgba(0,0,0,0.6);
+  background-color: $background-gray;
 }
 
 .settings-modal {
 	background: $background-gray;
 	margin:auto;
 	max-width: 480px;
-	height:100%;
-	position:relative;
 	padding: 2rem;
 	border-radius:5px;
-	box-shadow: 0 2px 20px 0 #000;
 }
 
 @media (min-width: 481px) {

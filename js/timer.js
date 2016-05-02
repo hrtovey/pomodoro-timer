@@ -813,17 +813,17 @@ HistoryWidget = {
 
     showSave: function(id) {
         HistoryWidget.saveTask(h.currentTaskEdit);
+        console.log(id);
 
         h.oldTaskInfo = $('#' + id).text();
         h.currentTaskEdit = id;
         $('#' + h.currentTaskEdit).attr('tabindex', "1").addClass('focus-border');
-        var taskSaveAreaId = id.substring(10);
 
         if (!h.taskSaveShowing) {
             var currentTaskSaveArea = $("<div>", {
                 "id": "task-save-area",
                 "class": "task-save-area"
-            }).insertAfter($('#' + taskSaveAreaId));
+            }).insertAfter($('#' + id));
 
             $("<button>", {
                 "id": "save-button",

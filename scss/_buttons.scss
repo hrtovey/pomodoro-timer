@@ -190,6 +190,17 @@ button {
 }
 
 .cancel-button {
-  text-transform:uppercase;
-  color: $light-gray;
+    text-transform: uppercase;
+    color: #F3F3F3;
+    border: 1px solid #f3f3f3;
+    border-radius: 2px;
+    width: 85px;
+    font-weight: 300;
+}
+
+.save-button {
+    border: 1px solid #69e1b4;
+    border-radius: 2px;
+    margin-right: 8px;
+    width: 85px;
 }

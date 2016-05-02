@@ -238,7 +238,7 @@
     vertical-align: top;
     color: white;
     font-weight: 300;
-    height: 60px;
+    height: 39px;
     width: 48px;
     min-width:48px;
 }
@@ -251,8 +251,10 @@
 }
 
 .task-save-area {
-    margin: 1px 0 0 60px;
+    background: #979797;
     position: absolute;
+    padding: 5px;
+    z-index:1;
 }
 
 .focus-border {

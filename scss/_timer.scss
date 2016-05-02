@@ -7,6 +7,13 @@
     border-bottom: 2px solid $light-gray;
     margin-bottom: 1rem;
     font-size:24px;
+    text-align:center;
+}
+
+@media (min-width: 780px) {
+    .task-input {
+        text-align: left;
+    }
 }
 
 
@@ -134,10 +141,6 @@
 
 .progress-notification.long-break-progress {
     color: lighten($accent3, 20%);
-}
-
-.buttons {
-    text-align:center;
 }
 
 // Fade Timer

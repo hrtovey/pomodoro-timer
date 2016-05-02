@@ -92,15 +92,20 @@
 
 // Task Item
 
+.history__container {
+    margin: 0 0 5px;
+}
+
 .history__task-item {
     background: $background-gray;
-    margin:0 0 5px;
     height:60px;
     position:relative;
+    display:table;
+    width:100%;
 }
 
 @media (min-width: 480px) {
-    .history__task-item {
+    .history__container {
       margin:0 0 2rem 2rem;
     }
 
@@ -158,23 +163,24 @@
 }
 
 .history__task-duration {
-    float: left;
+    display:table-cell;
+    padding:9px;
     background: $accent2;
     height: 60px;
     width: 60px;
+    min-width:60px;
     text-align: center;
     font-size:28px;
-    padding-top:5px;
     font-weight:400;
     color: $dark-gray;
+    vertical-align:top;
 }
 
 .history__task-description {
     font-weight:300;
-    padding:5px;
-    margin: -5px 0 0 -5px;
+    padding:9px;
+    border: 1px solid transparent;
 }
-
 
 
 .arrow-pomo {
@@ -221,30 +227,35 @@
 }
 
 .description-container {
-    display:inline-block;
-    margin: .6rem 1rem 0;
+    display:table-cell;
+    vertical-align:top;
+    padding-bottom:9px;
+    width:100%;
 }
 
-.edit-task {
-    float:right;
+.edit-task.button-ghost {
+    display: table-cell;
+    vertical-align: top;
     color: white;
     font-weight: 300;
     height: 60px;
     width: 48px;
+    min-width:48px;
 }
 
 .history__task-time {
     font-size: 12px;
     color: #979797;
-    margin-top: 2px;
+    margin-left: 5px;
     font-weight:400;
 }
 
 .task-save-area {
-    margin: -1.5rem 0 2rem 5.8rem;
+    margin: 1px 0 0 60px;
+    position: absolute;
 }
 
 .focus-border {
   border: 1px solid $light-gray;
-  margin: -6px 0 -1px -6px;
+  padding:9px;
 }

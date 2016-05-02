@@ -4,6 +4,16 @@ button {
     padding:5px 10px;
 }
 
+.buttons {
+    text-align:center;
+}
+
+@media (min-width: 780px) {
+  .buttons {
+    text-align: left;
+  }
+}
+
 .button {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     border: none;
@@ -24,7 +34,7 @@ button {
     width:100%;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 780px) {
   .button {
     width:auto;
   }

@@ -935,8 +935,9 @@ HistoryWidget = {
 
         for (var i = 0; i < h.row.length; i++) {
             var date = h.row[i].date.split(",").join("");
+            var task = h.row[i].task.split(",").join("");
 
-            var rowData = "" + date + "," + h.row[i].task + "," + h.row[i]["time started"] + "," + h.row[i]["time ended"] + "," + h.row[i]["time spent"];
+            var rowData = "" + date + "," + task + "," + h.row[i]["time started"] + "," + h.row[i]["time ended"] + "," + h.row[i]["time spent"];
             csv += "\r\n" + rowData;
         }
 
@@ -991,10 +992,14 @@ HistoryWidget = {
 
         }
 
+        var historyContainer = $('<div>', {
+            "class": "history__container"
+        }).prependTo($('.' + dateString + '-body'));
+
         var historyTaskItem = $("<div>", {
             "class" : defaults.taskItem + ' fade-in2 ' + defaults.type + '-icon',
             "id": defaults.id
-        }).prependTo($('.' + dateString + '-body'));
+        }).appendTo(historyContainer);
 
         var historyTaskDuration = $("<div>", {
             "class" : defaults.taskTime + ' arrow-' + defaults.type,

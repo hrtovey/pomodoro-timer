@@ -5,8 +5,15 @@
 }
 
 .history-empty {
-  display:inline-block;
-  text-align:left;
+    font-weight: 300;
+    text-align: left;
+    font-size: 20px;
+}
+
+@media (min-width: 418px) {
+    .history-empty {
+        text-align:center;
+    }
 }
 
 .arrow-svg {
@@ -17,6 +24,10 @@
 .history-empty-container {
   display:inline-block;
   margin-left:20px;
+}
+
+.history-empty-title {
+    font-size: 30px;
 }
 
 .history-data {

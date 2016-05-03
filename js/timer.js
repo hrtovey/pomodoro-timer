@@ -61,11 +61,14 @@ TimerWidget = {
         pauseMinuteDisplay: $('#pause-minute-display'),
         pauseSecondDisplay: $('#pause-second-display'),
         backgroundImage: $('#background-image'),
-        startTime: $('#start-time')
+        startTime: $('#start-time'),
+        wav: 'sound/ringing-bells.mp3',
+        audio: ''
     },
 
     init: function() {
         t = this.settings;
+        t.audio = new Audio(t.wav);
         this.bindUIActions();
         TimerWidget.displayTimerFoyer(s.timerSetting);
         // Animate Timer
@@ -342,9 +345,7 @@ TimerWidget = {
             TimerWidget.pomoFlow(type);
 
             if (s.soundOn === true) {
-                var wav = 'sound/ringing-bells.mp3';
-                var audio = new Audio(wav);
-                audio.play();
+                t.audio.play();
             }
 
             if (type === 'short-break' || type === 'long-break') {
@@ -580,6 +581,7 @@ SettingsWidget = {
 
     enterSettings: function() {
         s.settingsSection.removeClass('hide');
+        s.settingsSection.addClass('fade-in');
         $('.settings-modal').focus();
     },
 

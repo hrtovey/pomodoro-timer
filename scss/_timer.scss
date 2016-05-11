@@ -20,10 +20,10 @@
 
 .time {
     text-align: right;
-    position: relative;
-    top:-220px;
+    position: absolute;
     width: 215px;
     display:inline-block;
+    right:0;
 }
 
 
@@ -50,7 +50,6 @@
         height: 215px;
         position:relative;
         direction:ltr;
-        text-align:right
     }
 
     .task-area {
@@ -64,27 +63,27 @@
 .background-image {
     height: 215px;
     width: 215px;
+    right:0;
     background-repeat: no-repeat;
     display: inline-block;
     background-size:contain;
+    position:absolute;
 }
 
 .background__pomodoro {
     background-image: url('../img/tomato.png');
-    position: relative;
-    top: -11px;
+    top: -6px;
 }
 
 .background__short-break {
     background-image: url('../img/coffee.png');
-    position: relative;
-    top: -17px;
-    left: 15px;
+    top: -12px;
+    right: -15px;
 }
 
 .background__long-break {
     background-image: url('../img/badge.png');
-    top: 74px;
+    top: 5px;
 }
 
 .background__short-break .start-time {
@@ -144,14 +143,6 @@
 }
 
 // Fade Timer
-
-.time {
-    opacity: 0;
- }
-
- .background-image {
-    opacity: 1;
- }
 
 .fade-in {
     -webkit-animation: fade 0s;

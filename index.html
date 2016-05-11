@@ -10,6 +10,7 @@
 	
 </head>
 <body>
+<div id="overlay" class="overlay hide"></div>
 <header class="background-gray container">
 	<a href="http://htovey.com/pomodoro-timer" class="logo-link"><img src="img/logo.png" class="logo logo-image"><h1 class="logo">Pomodoro<span class="text--accent2">&plus;</span></h1></a>
 	
@@ -30,7 +31,7 @@
 		 		<div id="background-image" class="background-image background__pomodoro">
 		 			<div id="start-time" class="start-time"></div>
 				</div>
-				<div id="time" class="time fade-out">
+				<div id="time" class="time hide">
 						<canvas id="timer-animation" width="215" height="215" class="">
 							<span id="minute-display"></span>:<span id="second-display"></span>
 						</canvas> 
@@ -104,7 +105,7 @@
 	</div>
 
 
-	<div id="settings" class="overlay hide">
+	<div id="settings" class="hide">
 		<div class="settings-modal" tabindex='-1'>
 			<div id="toast-unsupported" class="toast hide"><button id="close-toast-unsupported" class="close-toast">X</button><p id="toast-text">Sorry, but your browser doesn't support web notifications.</p></div>
 			<div id="toast-notifications" class="toast hide"><button id="close-toast-notifications" class="close-toast">X</button><p id="toast-text">Desktop notifications have been disabled.</p></div>
@@ -165,7 +166,7 @@
 		</div>
 	</div>
 
-	<div id="about-section" class="overlay hide">
+	<div id="about-section" class="hide">
 		<div class="settings-modal" tabindex='-1'>
 		<button id="close-about" class="close-toast close-about">X</button>
 			<h2 class="instructions">About Pomodoro<span class="text--accent2">&plus;</span></h2>
@@ -184,6 +185,7 @@
 	</div>
 
 </main>
+	<script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
 	<script src="js/jspdf.min.js"></script>
 	<script src="js/jspdf.plugin.autotable.js"></script>
 	<script src="js/min/pomodoro-min.js"></script>

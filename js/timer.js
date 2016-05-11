@@ -1,19 +1,18 @@
-// Fix PDF
-// Fix CSS
-// Make Empty State gorgeous
-// Words to elipses if too big
-
+// Notifications backwards
+// 
 
 var t,
 TimerWidget,
 s,
 SettingsWidget,
 h,
-HistoryWidget;
+HistoryWidget,
+a,
+AboutWidget;
 
 
-var t,
 TimerWidget = {
+    // Create variables to use throughout code.
     settings: {
         timerSection: $('#timer'),
         timer: $('#time'),
@@ -29,7 +28,6 @@ TimerWidget = {
         timerCountdownStart: 25 * 60,
         timerStart: moment(),
         pomoCount: 0,
-        statement: $('#statement'),
         timerEnd: moment(),
         timerType: 'pomo',
         runningPauseTimer: '',
@@ -47,9 +45,13 @@ TimerWidget = {
         H: 0,
         //Variables
         degrees: 0,
+        description: "",
         new_degrees: 0,
         difference: 0,
-        color: "#EE424E", //green looks better to me
+        color: "#EE424E",
+        red: "#EE424E",
+        orange: "#FFA468",
+        blue: "#69E1B4",
         bgcolor: "#18191B",
         textColor: "#979797",
         text: "",
@@ -67,113 +69,153 @@ TimerWidget = {
     },
 
     init: function() {
+        // initialize t to equal the settings object
         t = this.settings;
-        t.audio = new Audio(t.wav);
-        this.bindUIActions();
-        TimerWidget.displayTimerFoyer(s.timerSetting);
-        // Animate Timer
 
+        // create new setting and set it to new Audio (of t.wav)
+        t.audio = new Audio(t.wav);
+
+        // call bindUIActions function
+        this.bindUIActions();
+        
+        // Display the Pomodoro tomato image with the correct timer setting (either 25 or previous settings)
+        TimerWidget.displayTimerFoyer('pomo', s.timerSetting);
+        // Animate Timer
+        // Setup canvas for timer animations
         t.canvas = $("#timer-animation")[0];
         t.ctx = t.canvas.getContext("2d");
         //dimensions
         t.W = t.canvas.width;
         t.H = t.canvas.height;
         
-        //Lets add some animation for fun
+        // Draw timer so it's ready to go
         TimerWidget.draw();
 
     },
 
     bindUIActions: function() {
+        // When user clicks the settings button, open settings area
         t.changeSettingsButton.on('click', function () {
             SettingsWidget.enterSettings();
         });
 
+        // When user clicks the reset button on the timer, reset the time on the timer
         t.resetButton.on('click', function() {
             TimerWidget.reset();
         });
 
-        t.pausePlay.click(function() {
-          $(this).toggleClass("paused");
-        });
-
+        // When user clicks the play/pause button, pause or play the timer.
         t.pausePlay.on('click', function() {
-            TimerWidget.setPlayPause();
+            TimerWidget.setPlayPause($(this));
         });
 
+
+        // When user clicks the Start Timer button, start a pomodoro timer.
         t.startPomodoroButton.on('click', function() {
-            h.currentTask = h.taskInput.val();
-            h.taskInput.addClass('hide');
-            $(this).addClass('hide');
-            t.progressNotification.addClass('pomodoro-progress');
-            t.progressNotification.removeClass('hide short-break-progress long-break-setting');
-
-            if (h.currentTask === '') {
-                h.currentTask = 'Working Hard';
-            }
-
-            h.taskWritten.text(h.currentTask);
-            
-            h.taskWritten.removeClass('hide');
-            TimerWidget.cancelTimer();
-            t.timerType = 'pomo';
-            t.timerCountdownStart = s.timerSetting;
-            t.degrees = 0;
-            TimerWidget.startTimer(s.timerSetting, t.timerType);
+            TimerWidget.showTimer($(this), 'pomo');
         });
 
         t.startShortBreakButton.on('click', function() {
-            h.currentTask = "Break Time"; // duplicate code
-            h.taskInput.addClass('hide');
-            $(this).addClass('hide');
-            t.progressNotification.addClass('short-break-progress');
-            t.progressNotification.removeClass('hide pomodoro-progress long-break-setting');
-
-            h.taskWritten.removeClass('hide');
-            TimerWidget.cancelTimer();
-            t.timerType = 'short-break';
-            t.timerCountdownStart = s.shortBreakSetting;
-            t.degrees = 0;
-            TimerWidget.startTimer(s.shortBreakSetting, t.timerType);
+            TimerWidget.showTimer($(this), 'short-break');
         });
 
         t.startLongBreakButton.on('click', function() {
-            h.currentTask = "Long Break";
-            h.taskInput.addClass('hide');
-            $(this).addClass('hide');
-            t.progressNotification.addClass('long-break-progress');
-            t.progressNotification.removeClass('hide short-break-progress pomodoro-progress');
-
-            h.taskWritten.removeClass('hide');
-            TimerWidget.cancelTimer();
-            t.timerType = 'long-break';
-            t.timerCountdownStart = s.longBreakSetting;
-            t.degrees = 0;
-            TimerWidget.startTimer(s.longBreakSetting, t.timerType); 
+            TimerWidget.showTimer($(this), 'long-break');
         });
     },
 
+    showTimer: function(button, type) {
+        // Choose all the different timer settings that vary between timer types. Current Task, timer color, "In Progress" text color, and timer length.
+        TimerWidget.chooseTimerSettings(type);
+        
+        // Hide Task Input and Start Timer button
+        h.taskInput.addClass('hide');
+        button.addClass('hide');
+
+        // Show task being worked on (user-entered text, or placeholders)
+        h.taskWritten.text(h.currentTask).removeClass('hide');
+
+        // Cancel any timers currently running
+        TimerWidget.cancelTimer();
+
+        // Set the timer type
+        t.timerType = type;
+
+        // Reset the timer canvas animation
+        t.degrees = 0;
+
+        // Hide the Timer Foyer.
+        TimerWidget.hideTimerFoyer();
+
+        // Start the timer based on countdown setting and timer type
+        TimerWidget.startTimer(t.timerCountdownStart, t.timerType);
+    },
+
+    chooseTimerSettings: function(type) {
+        // If user starts a pomodoro, the currentTask will be whatever the user entered in the task input or "Working Hard." The timer color will be red. The "In Progress" text will be light red. The timer will be set to 25 minutes (or whatever number has been entered in the Settings). The description will be set to the current task.
+        if (type === 'pomo') {
+            if (h.taskInput.val() === '') {
+                h.currentTask = "Working Hard";
+            } else {
+                h.currentTask = h.taskInput.val();
+            }
+            t.color = t.red;
+            t.progressNotification.removeClass().addClass('progress-notification pomodoro-progress');
+            t.timerCountdownStart = s.timerSetting;
+            t.description = h.currentTask;
+
+        // If user starts a short break, the currentTask will be "Take a short break. You've earned it." The timer color will be orange. The "In Progress" text will be light orange. The timer will be set to 5 minutes (or whatever number has been entered in the Settings section). The description will be set to "Short Break".
+        } else if (type === 'short-break') {
+            t.color = t.orange;
+            t.progressNotification.removeClass().addClass('progress-notification short-break-progress');
+            t.timerCountdownStart = s.shortBreakSetting;
+            h.currentTask = "Take a short break. You've earned it!";
+            t.description = "Short Break";
+
+        // If user starts a long break, the currentTask will be "Nice work! Time to take a longer break." The timer color will be blue. The "In Progress" text will be a light blue. The timer will be to 20 minutes (or whatever number has been entered in the Settings section). The description will be set to "Long Break".
+        } else if (type === 'long-break') {
+            t.color = t.blue;
+            t.progressNotification.removeClass().addClass('progress-notification long-break-progress');
+            t.timerCountdownStart = s.longBreakSetting;
+            h.currentTask = "Nice work! Time to take a longer break.";
+            t.description = "Long Break";
+        }
+    },
+
     reset: function() {
+        // When timer is reset, cancel both the regular timer and the pause timer.
         TimerWidget.cancelTimer();
         TimerWidget.cancelPauseTimer();
+
+        // Show the timer foyer where users can start the timer over again.
         switch(t.timerType) {
+            // If the timer being reset was a pomodoro, show the Pomodoro Foyer.
             case 'pomo':
-                TimerWidget.showPomodoro();
+                TimerWidget.displayTimerFoyer('pomo', s.timerSetting);
                 break;
+            // If the timer being reset was a short break, show the Short Break Foyer.
             case 'short-break':
-                TimerWidget.showShortBreak();
+                TimerWidget.displayTimerFoyer('short-break', s.shortBreakSetting);
                 break;
+            // If the timer being reset was a long break, show the Long Break Foyer.
             case 'long-break':
-                TimerWidget.showLongBreak();
+                TimerWidget.displayTimerFoyer('long-break', s.longBreakSetting);
                 break;
+            // Otherwise, just show the Pomdoro Foyer in case things go wonky.
             default:
-                TimerWidget.showPomodoro();
+                TimerWidget.displayTimerFoyer('pomo', s.timerSetting);
 
         }
     },
 
-    setPlayPause: function() {
+    setPlayPause: function(element) {
+        // If the user pressed play, switch to pause button. If the user pressed pause, switch to play button.
+        element.toggleClass("paused");
+
+        // Set the playpause variable to true if user presses play button. Set the playpause variable to false if user presses the pause button.
         t.playpause = !t.playpause;
+
+        // If user presses play button, cancel the pause timer, store the pause timer data in local storage, and then start the regular timer again from where user left off.
         if (t.playpause) {
             TimerWidget.cancelPauseTimer();
             HistoryWidget.storeLocally({
@@ -187,16 +229,24 @@ TimerWidget = {
                 timeLabel: h.timeLabel
             });
             TimerWidget.startTimer(t.timerCountdown, t.timerType);
+        // If user presses pause button, pause the regular timer.
         } else {
             TimerWidget.pauseTimer();
         }
     },
 
     pauseTimer: function() {
+        // When timer is paused, assign timerEnd to the current time.
         t.timerEnd = moment();
+
+        // Stop the regular timer.
         clearInterval(t.runningTimer);
+
+
+
+        // Store the information from the regular timer into local storage.
         HistoryWidget.storeLocally({
-            description: h.currentTask,
+            description: t.description,
             timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
             timeStarted: t.timerStart.format('h:mm a'),
             timeEnded: t.timerEnd.format('h:mm a'),
@@ -205,111 +255,187 @@ TimerWidget = {
             type: t.timerType,
             timeLabel: h.timeLabel
         });
+
+        // Show the "timer paused" text.
         t.pauseText.removeClass('hide');
+
+        // Start the pause timer at 0.
         t.pauseCounter = 0;
+
+        // Assign pauseStartMoment to current time.
         t.pauseStartMoment = moment();
+
+        // Create a minute and second variable based on the pause counter time.
         var minute = Math.floor(t.pauseCounter / 60);
         var second = t.pauseCounter % 60;
+
+        // Show the minute and second in the pause timer display.
         t.pauseMinuteDisplay.text(TimerWidget.formatTime(minute));
         t.pauseSecondDisplay.text(TimerWidget.formatTime(second));
+
+        // Start a pause timer that counts up from 0.
         t.runningPauseTimer = setInterval(TimerWidget.intervalTimerUp, 1000);
     },
 
     cancelTimer: function() {
+        // When a timer is cancelled, make note of what time it is and assign that time to timerEnd.
         t.timerEnd = moment();
+
+        // Stop the running timer.
         clearInterval(t.runningTimer);
+
+        // Set the timerCountdown to 0.
         t.timerCountdown = 0;
     },
 
     pomoFlow: function(type) {
+        // If sound notifications are turned on, play the sound notification.
+        if (s.soundOn === true) {
+            t.audio.play();
+        }
+
+        // If the timer type completed is a pomodoro timer, add 1 to the pomodoro count.
         if (type === 'pomo') {
+            // If desktop notifications are on, show desktop notification.
+            if (s.notifyOn === true) {
+                SettingsWidget.notify('img/coffee-notification.png', 'Nice work!', 'You deserve a break.');
+            }
+
             t.pomoCount += 1;
+
+            // If there have been 4 pomodoro timers since starting (or the last long break), show the Long Break foyer.
             if (t.pomoCount % 4 === 0) {
-                TimerWidget.showLongBreak();
+                TimerWidget.displayTimerFoyer('long-break', s.longBreakSetting);
+
+            // Otherwise, show the Short Break Foyer.
             } else {
-                TimerWidget.showShortBreak();
+                TimerWidget.displayTimerFoyer('short-break', s.shortBreakSetting);
             }
         }
 
-        if (type !== 'pomo') {
-            TimerWidget.showPomodoro();
+        // If the timer completed was a short break or long break, show the Pomdoro Foyer.
+        else {        
+            if (s.notifyOn === true) {
+                // If desktop notifications are on, show desktop notification.
+                SettingsWidget.notify('img/tomato-notification.png', 'Break Over!', 'Back to work.');
+            }
+            TimerWidget.displayTimerFoyer('pomo', s.timerSetting);
         }
 
+        // Store timer information locally. 
+        HistoryWidget.storeLocally({
+            description: t.description,
+            timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
+            timeStarted: t.timerStart.format('h:mm a'),
+            timeEnded: t.timerEnd.format('h:mm a'),
+            id: t.timerEnd.format('x'),
+            date: t.timerEnd.format('MMMM Do, YYYY'),
+            type: type,
+            timeLabel: h.timeLabel
+        });
         
     },
 
-    showPomodoro: function() {
-        TimerWidget.displayTimerFoyer(s.timerSetting);
+
+    displayTimerFoyer: function(type, countdown) {
+        // Make sure the Pause area is hidden
+        t.pauseArea.addClass('hide');
+
+        // Display the countdown time on top of the background image
+        var minute = Math.floor(countdown / 60);
+        var second = countdown % 60;
+        t.startTime.text(TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second));
+
+        // If the timer is going to be a pomodoro:
+        // - Show the task input form.
+        // - Show the Start Pomodoro button.
+        // - Hide the Task Written area.
+        // - Show the pomodoro background image.
+        // - Set the timer type to "pomo".
+        if (type === 'pomo') {
+            
+            h.taskInput.removeClass('hide');
+            t.startPomodoroButton.removeClass('hide');
+            h.taskWritten.addClass('hide');
+            t.backgroundImage.removeClass().addClass('background-image background__pomodoro fade-in2');
+            t.timerType = "pomo";
+        } 
+
+        // If the timer is going to be a short break:
+        // - Show the Start Short Break button.
+        // - Change the Task Written area to "Take a short break. You've earned it!".
+        // - Show the short break background image.
+        // - Set the timer type to "short-break".
+        else if (type === 'short-break') {
+            t.startShortBreakButton.removeClass('hide');
+            h.taskWritten.text("Take a short break. You've earned it!");
+            t.backgroundImage.removeClass().addClass('background-image background__short-break fade-in2');
+            t.timerType = "short-break";
+        } 
+
+        // If the timer is going to be a long break:
+        // - Show the Start Long Break button.
+        // - Change the Task Written text to "Nice work! Time to take a longer break.".
+        // - Show the long break background image.
+        // - Set the timer type to "long-break".
+        else if (type === 'long-break') {
+            t.startLongBreakButton.removeClass('hide');
+            h.taskWritten.text("Nice work! Time to take a longer break.");
+            t.backgroundImage.removeClass().addClass('background-image background__long-break fade-in2');
+            t.timerType = "long-break";
+        }
+
+        // Show the start time.
         t.startTime.removeClass('hide');
-        h.taskInput.removeClass('hide');
-        t.startPomodoroButton.removeClass('hide');
+        // Hide the progress notification.
         t.progressNotification.addClass('hide');
-        h.taskWritten.addClass('hide');
-        t.backgroundImage.removeClass('background__short-break background__long-break fade-out2');
-        t.backgroundImage.addClass('background__pomodoro fade-in2');
-        t.timer.removeClass('fade-in2');
-        t.timer.addClass('fade-out2');
-        t.timerType = "pomo";
+        // Fade out the timer.
+        TimerWidget.hideSection(t.timer);
+        // Cancel the pause timer if it's going.
+        TimerWidget.cancelPauseTimer();
+        
     },
 
-    showLongBreak: function() {
-        TimerWidget.displayTimerFoyer(s.longBreakSetting);
-        t.startTime.removeClass('hide');
-        t.startLongBreakButton.removeClass('hide');
-        t.progressNotification.addClass('hide');
-        h.taskWritten.text("Nice work! Time to take a longer break.");
-        t.backgroundImage.removeClass('background__short-break background__pomodoro fade-out2');
-        t.backgroundImage.addClass('background__long-break fade-in2');
-        t.timer.removeClass('fade-in2');
-        t.timer.addClass('fade-out2');
-        t.timerType = "long-break";
-
-        TimerWidget.cancelPauseTimer();
-    },
-
-    showShortBreak: function() {
-        TimerWidget.displayTimerFoyer(s.shortBreakSetting);
-        t.startTime.removeClass('hide');
-        t.startShortBreakButton.removeClass('hide');
-        t.progressNotification.addClass('hide');
-        h.taskWritten.text("Take a short break. You've earned it!");
-        t.backgroundImage.removeClass('background__long-break background__pomodoro fade-out2');
-        t.backgroundImage.addClass('background__short-break fade-in2');
-        t.timer.removeClass('fade-in2');
-        t.timer.addClass('fade-out2');
-        t.timerType = "short-break";
-
-        TimerWidget.cancelPauseTimer();
+    hideSection: function(element) {
+        element.removeClass('fade-in2').addClass('fade-out2');
+        
     },
 
     startTimer: function(setting, type) {
+
+        // Set how much time is on the timer when it starts.
         t.timerBegin = setting;
+
+        // Set the timer Start at current time.
         t.timerStart = moment();
+
+        // Set how much time is on the timer (should be the same as timerBegin when the timer starts the first time).
         t.timerCountdown = setting;
+
+        // Calculate the degree to help draw and animate the timer based on the starting time on the timer.
         t.degreeCalculation = 360 / t.timerCountdownStart;
-        t.statement.addClass('hide');
+
+        // Show the timer!
         TimerWidget.displayTimer(t.timerCountdown);
-        TimerWidget.hideTimerFoyer();
+
+        // Create a running timer and start it!
         t.runningTimer = setInterval(TimerWidget.intervalTimer, 1000, type);
+
+        // Make sure the Empty State for Task History is hidden.
         h.historyEmptyState.addClass('hide');
+
+        // Show Task History section.
         h.historyData.removeClass('hide');
     },
 
-    chooseStatement: function(type) {
-        if (type === 'pomo') {
-            if (t.pomoCount % 4 === 0) {
-                return "Take a long break!";
-            } else {
-                return "Take a short break!";
-            }
-        } else {
-            return "Back to work with you!";
-        }
-    },
-
     intervalTimerUp: function() {
+        // Set the pause current moment to current time.
         t.pauseCurrentMoment = moment();
+
+        // Set count to the difference between the current time and the starting time on the pause timer.
         t.count = t.pauseCurrentMoment.diff(t.pauseStartMoment, 'second');
+
+        // Display t.count in a timer format.
         var minute = Math.floor(t.count / 60);
         var second = t.count % 60;
         t.pauseMinuteDisplay.text(TimerWidget.formatTime(minute));
@@ -317,92 +443,63 @@ TimerWidget = {
 
     },
 
-    displayTimerFoyer: function(countdown) {
-        t.pauseArea.addClass('hide');
-        var minute = Math.floor(countdown / 60);
-        var second = countdown % 60;
-        t.startTime.text(TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second));
-        
-    },
 
     cancelPauseTimer: function() {
+        // Morph pause/play button into pause icon.
         t.pausePlay.removeClass("paused");
+        // Set playpause to true (play).
         t.playpause = true;
+        // Stop the pause timer.
         clearInterval(t.runningPauseTimer);
-        t.degrees = t.new_degrees;
+        // 
+        // t.degrees = t.new_degrees;  What does this do?
+        // Hide the pause text.
         t.pauseText.addClass('hide');
     },
 
     intervalTimer: function(type) {
-
+        // If the timer reaches 1 (or goes below it), don't run the timer again.
         if (t.timerCountdown <= 1) {
             TimerWidget.cancelTimer();
         }
 
+        // If the timer is greater than 0, change the timer countdown number.
         if (t.timerCountdown > 0) {
             t.timerCountdown = t.timerBegin - Math.round((moment() - t.timerStart) / 1000);
-        } else if (t.timerCountdown <= 0) {
+        } 
+
+        // If the timer countdown left is less than or equal to 0, show the Timer Foyer.
+        else if (t.timerCountdown <= 0) {
             TimerWidget.pomoFlow(type);
-
-            if (s.soundOn === true) {
-                t.audio.play();
-            }
-
-            if (type === 'short-break' || type === 'long-break') {
-                if (s.notifyOn === true) {
-                    SettingsWidget.notify('img/tomato-notification.png', 'Break Over!', 'Back to work.');
-                }
-                HistoryWidget.storeLocally({
-                    description: 'Break Time',
-                    timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
-                    timeStarted: t.timerStart.format('h:mm a'),
-                    timeEnded: t.timerEnd.format('h:mm a'),
-                    id: t.timerEnd.format('x'),
-                    date: t.timerEnd.format('MMMM Do, YYYY'),
-                    type: type,
-                    timeLabel: h.timeLabel
-                });
-            } else {
-                if (s.notifyOn === true) {
-                    SettingsWidget.notify('img/coffee-notification.png', 'Nice work!', 'You deserve a break.');
-                }
-                HistoryWidget.storeLocally({
-                  description: h.currentTask,
-                  timeTaken: HistoryWidget.displayTimeTaken(t.timerBegin - t.timerCountdown),
-                  timeStarted: t.timerStart.format('h:mm a'),
-                  timeEnded: t.timerEnd.format('h:mm a'),
-                  id: t.timerEnd.format('x'),
-                  date: t.timerEnd.format('MMMM Do, YYYY'),
-                  type: type,
-                  timeLabel: h.timeLabel
-                });
-            }
-            
         }
 
         
-
+        // Show timer
         TimerWidget.displayTimer(t.timerCountdown);
 
         
     },
 
     hideTimerFoyer: function() {
-        t.timer.removeClass('fade-out2 fade-out').addClass('fade-in2');
-        t.backgroundImage.removeClass('fade-in2').addClass('fade-out2');
+        // Fade in timer, fade out background image, hide pause area.
+        t.timer.removeClass('fade-out2 fade-out hide').addClass('fade-in2');
+        TimerWidget.hideSection(t.backgroundImage);
+        t.pauseArea.removeClass('hide');
     },
 
     displayTimer: function(countdown) {
-        t.pauseArea.removeClass('hide');
+        // Take the countdown and format it into timer-like display.
         var minute = Math.floor(countdown / 60);
         var second = countdown % 60;
-
+        // Display timer number.
         t.text = '' + TimerWidget.formatTime(minute) + ':' + TimerWidget.formatTime(second);
         
+        // Draw timer.
         TimerWidget.draw();
     },
 
     formatTime: function(time) {
+        // Take given time and add leading 0 if the number is less than 10.
         if (time < 10) {
             return '0' + time;
         } else {
@@ -413,11 +510,11 @@ TimerWidget = {
     // Animating Timer
 
     initAnimation: function() {
-        //Clear the canvas everytime a chart is drawn
+        // Clear the canvas everytime a chart is drawn.
         t.ctx.closePath();
         t.ctx.clearRect(0, 0, t.W, t.H);
         
-        //Background 360 degree arc
+        // Create background 360 degree arc.
         t.ctx.beginPath();
         t.ctx.strokeStyle = t.bgcolor;
         t.ctx.lineWidth = 15;
@@ -425,44 +522,42 @@ TimerWidget = {
         t.ctx.stroke();
         t.ctx.closePath();
         
-        //gauge will be a simple arc
-        //Angle in radians = angle in degrees * PI / 180
+        // Create simple arc for timer.
+        // Angle in radians = angle in degrees * PI / 180
         var radians = t.degrees * Math.PI / 180;
         t.ctx.beginPath();
         t.ctx.strokeStyle = t.color;
         t.ctx.lineWidth = 15;
-        //The arc starts from the rightmost end. If we deduct 90 degrees from the angles
-        //the arc will start from the topmost end
+
+        // Start arc from top.
         t.ctx.arc(t.W/2, t.H/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false); 
-        //you can see the arc now
+        
+        // Draw the arc.
         t.ctx.stroke();
         
-        //Lets add the text
+        // Add text
         t.ctx.fillStyle = t.textColor;
         t.ctx.font = "300 50px lato";
-        //Lets center the text
-        //deducting half of text width from position x
+
+        // Center text.
         var text_width = t.ctx.measureText(t.text).width;
-        //adding manual value to position y since the height of the text cannot
-        //be measured easily. There are hacks but we will keep it manual for now.
         t.ctx.fillText(t.text, t.W/2 - text_width/2, t.H/2 + 15);
     },
 
     draw: function() {
-        //Cancel any movement animation if a new chart is requested
+        // Cancel animation if a new timer is drawn.
         if(typeof t.animation_loop !== undefined) {clearInterval(t.animation_loop);}
         
-        //random degree from 0 to 360
+        // Create degrees from timer countdown.
         t.new_degrees = Math.round((t.timerCountdownStart-t.timerCountdown)*t.degreeCalculation);
         t.difference = t.degrees - t.new_degrees;
-        //This will animate the gauge to new positions
-        //The animation will take 1 second
-        //time for each frame is 1sec / difference in degrees
+        
+        // Create animation loop that animates every second.
         t.animation_loop = setInterval(TimerWidget.animate_to, 1000/t.difference);
     },
 
     animate_to: function() {
-        //clear animation loop if degrees reaches to new_degrees
+        // Clear animation loop if degrees reaches new_degrees.
         if (t.degrees === t.new_degrees) {
             clearInterval(t.animation_loop);
         } else if (t.degrees < t.new_degrees) {
@@ -476,9 +571,8 @@ TimerWidget = {
 
 };
 
-var s,
 SettingsWidget = {
-
+    // Create variables to use throughout code.
     settings: {
         timeInput: $('#time-input'),
         shortBreakInput: $('#short-break'),
@@ -494,6 +588,7 @@ SettingsWidget = {
         closeToastUnsupported: $('#close-toast-unsupported'),
         closeToastNotifications: $('#close-toast-notifications'),
         closeToastSound: $('#close-toast-sound'),
+        overlay: $('#overlay'),
         timerSetting: 1500,
         shortBreakSetting: 300,
         longBreakSetting: 1200,
@@ -580,6 +675,7 @@ SettingsWidget = {
     },
 
     enterSettings: function() {
+        s.overlay.removeClass('hide');
         s.settingsSection.removeClass('hide');
         s.settingsSection.addClass('fade-in');
         $('.settings-modal').focus();
@@ -587,6 +683,7 @@ SettingsWidget = {
 
     exitSettings: function() {
         s.settingsSection.addClass('hide');
+        s.overlay.addClass('hide');
     },
 
     checkNotificationSetting: function(element) {
@@ -657,7 +754,6 @@ SettingsWidget = {
 
 };
 
-var h,
 HistoryWidget = {
 
     settings: {
@@ -815,7 +911,6 @@ HistoryWidget = {
 
     showSave: function(id) {
         HistoryWidget.saveTask(h.currentTaskEdit);
-        console.log(id);
 
         h.oldTaskInfo = $('#' + id).text();
         h.currentTaskEdit = id;
@@ -1049,7 +1144,6 @@ HistoryWidget = {
     }
 };
 
-var a,
 AboutWidget = {
     settings: {
         showAbout: $('#show-about'),
@@ -1075,10 +1169,12 @@ AboutWidget = {
 
     showAbout: function() {
         a.aboutSection.removeClass('hide');
+        s.overlay.removeClass('hide');
     },
 
     closeAbout: function() {
         a.aboutSection.addClass('hide');
+        s.overlay.addClass('hide');
     }
 };
 
@@ -1086,8 +1182,9 @@ AboutWidget = {
 
 $(document).ready(function() {
     "use strict";
+    // Order is important as the Timer Widget relies on variables from History Widget and Settings Widget.
     SettingsWidget.init();
-    TimerWidget.init();
     HistoryWidget.init();
+    TimerWidget.init();
     AboutWidget.init();
 });

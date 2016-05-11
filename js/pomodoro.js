@@ -1,1 +1,1 @@
-// @codekit-append ""moment.min.js", "waves.js", "timer2.js";
+// @codekit-append ""moment.min.js", "waves.js", "timer.js";

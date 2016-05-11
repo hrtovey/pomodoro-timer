@@ -1,5 +1,5 @@
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -14,13 +14,12 @@
 	max-width: 480px;
 	padding: 2rem;
 	border-radius:5px;
-}
-
-@media (min-width: 481px) {
-	.settings-modal {
-		top:15%;
-		height:auto
-	}
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  right: 0;
 }
 
 .settings-modal:focus {
